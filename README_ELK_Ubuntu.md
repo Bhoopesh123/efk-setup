@@ -119,7 +119,7 @@ Next, load the index template into Elasticsearch. An Elasticsearch index is a co
 Filebeat comes packaged with sample Kibana dashboards that allow you to visualize Filebeat data in Kibana. Before you can use the dashboards, you need to create the index pattern and load the dashboards into Kibana.
 As the dashboards load, Filebeat connects to Elasticsearch to check version information. To load dashboards when Logstash is enabled, you need to disable the Logstash output and enable Elasticsearch output:
 
-    sudo filebeat setup -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=['localhost:9200']' -E setup.kibana.host=localhost:5601
+sudo filebeat setup -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=['localhost:9200']' -E setup.kibana.host=localhost:5601
 
 After a few minutes, you should receive output similar to this:
 Output
