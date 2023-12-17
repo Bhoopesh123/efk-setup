@@ -119,20 +119,7 @@ Next, load the index template into Elasticsearch. An Elasticsearch index is a co
 Filebeat comes packaged with sample Kibana dashboards that allow you to visualize Filebeat data in Kibana. Before you can use the dashboards, you need to create the index pattern and load the dashboards into Kibana.
 As the dashboards load, Filebeat connects to Elasticsearch to check version information. To load dashboards when Logstash is enabled, you need to disable the Logstash output and enable Elasticsearch output:
 
-sudo filebeat setup -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=['localhost:9200']' -E setup.kibana.host=localhost:5601
-
-After a few minutes, you should receive output similar to this:
-Output
-- 
-Overwriting ILM policy is disabled. Set `setup.ilm.overwrite:true` for enabling.
-Index setup finished.
-Loading dashboards (Kibana must be running and reachable)
-Loaded dashboards
-Setting up ML using setup --machine-learning is going to be removed in 8.0.0. Please use the ML app instead.
-See more: https://www.elastic.co/guide/en/elastic-stack-overview/current/xpack-ml.html
-Loaded machine learning job configurations
-Loaded Ingest pipelines
-
+    sudo filebeat setup -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=['localhost:9200']' -E setup.kibana.host=localhost:5601
     sudo systemctl start filebeat
     sudo systemctl enable filebeat
     curl -XGET 'http://localhost:9200/filebeat-*/_search?pretty'
