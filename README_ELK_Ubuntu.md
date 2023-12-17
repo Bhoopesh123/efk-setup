@@ -53,6 +53,7 @@ Insert the following input configuration. This specifies a beats input that will
     }
 
     sudo nano /etc/logstash/conf.d/30-elasticsearch-output.conf
+
     output {
     if [@metadata][pipeline] {
         elasticsearch {
@@ -69,13 +70,23 @@ Insert the following input configuration. This specifies a beats input that will
         }
     }
     }
+
     sudo -u logstash /usr/share/logstash/bin/logstash --path.settings /etc/logstash -t
     sudo systemctl start logstash
     sudo systemctl enable logstash
 
 # 4. Installing and Configuring Filebeat
 
-The Elastic Stack uses several lightweight data shippers called Beats to collect data from various sources and transport them to Logstash or Elasticsearch. 
+The Elastic Stack uses several lightweight data shippers called Beats to collect data from various sources and transport them to Logstash or Elasticsearch. Here are the Beats that are currently available from Elastic:
+
+- Filebeat: collects and ships log files.
+- Metricbeat: collects metrics from your systems and services.
+- Packetbeat: collects and analyzes network data.
+- Winlogbeat: collects Windows event logs.
+- Auditbeat: collects Linux audit framework data and monitors file integrity.
+- Heartbeat: monitors services for their availability with active probing.
+
+In this tutorial we will use Filebeat to forward local logs to our Elastic Stack.
 
     sudo apt install filebeat
     sudo nano /etc/filebeat/filebeat.yml
@@ -93,9 +104,16 @@ Then, configure the output.logstash section. Uncomment the lines output.logstash
     output.logstash:
     # The Logstash hosts
     hosts: ["localhost:5044"]
+
     sudo filebeat modules enable system
     sudo filebeat modules list
+
+Next, we need to set up the Filebeat ingest pipelines, which parse the log data before sending it through logstash to Elasticsearch. To load the ingest pipeline for the system module, enter the following command:
+
     sudo filebeat setup --pipelines --modules system
+
+Next, load the index template into Elasticsearch. An Elasticsearch index is a collection of documents that have similar characteristics. Indexes are identified with a name, which is used to refer to the index when performing various operations within it.
+    
     sudo filebeat setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["localhost:9200"]'
 
 Filebeat comes packaged with sample Kibana dashboards that allow you to visualize Filebeat data in Kibana. Before you can use the dashboards, you need to create the index pattern and load the dashboards into Kibana.
