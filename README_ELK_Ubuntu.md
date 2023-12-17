@@ -5,10 +5,10 @@ The Elastic Stack — formerly known as the ELK Stack — is a collection of ope
 
 The Elastic Stack has four main components:
 
-- Elasticsearch: a distributed RESTful search engine which stores all of the collected data.
-- Logstash: the data processing component of the Elastic Stack which sends incoming data to Elasticsearch.
-- Kibana: a web interface for searching and visualizing logs.
-- Beats: lightweight, single-purpose data shippers that can send data from hundreds or thousands of machines to either Logstash or Elasticsearch.
+- Elasticsearch: A distributed RESTful search engine which stores all of the collected data.
+- Logstash: The data processing component of the Elastic Stack which sends incoming data to Elasticsearch.
+- Kibana: A web interface for searching and visualizing logs.
+- Beats: Lightweight, single-purpose data shippers that can send data from hundreds or thousands of machines to either Logstash or Elasticsearch.
 
 # 1. Installing and Configuring Elasticsearch  
 
@@ -31,6 +31,9 @@ According to the official documentation, you should install Kibana only after in
     sudo apt install kibana
     sudo systemctl enable kibana
     sudo systemctl start kibana
+
+The following command will create the administrative Kibana user and password, and store them in the htpasswd.users file. You will configure Nginx to require this username and password and read this file momentarily:
+
     echo "kibanaadmin:`openssl passwd -apr1`" | sudo tee -a /etc/nginx/htpasswd.users
 
 # 3. Installing and Configuring Logstash
