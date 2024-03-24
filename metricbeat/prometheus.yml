@@ -1,0 +1,10 @@
+# Module: prometheus
+# Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.17/metricbeat-module-prometheus.html
+
+- module: prometheus
+  period: 10s
+  hosts: ["localhost:9100"]
+  metrics_path: /metrics
+  metrics_filters:
+    include: ["node_filesystem_*"]
+    exclude: ["node_filesystem_device_*"]
