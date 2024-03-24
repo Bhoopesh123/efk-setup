@@ -1,5 +1,5 @@
 
-# ELK Set up on Ubunutu
+# ELK Set up with MetricBeat on Ubunutu
 
 The Elastic Stack — formerly known as the ELK Stack — is a collection of open-source software produced by Elastic which allows you to search, analyze, and visualize logs generated from any source in any format, a practice known as centralized logging. 
 
@@ -65,19 +65,21 @@ To Setup the default metricbeat dashboard on Kibana, please execute the followin
 
 To verify the dashboard created from the above step, Please login into Kibana.
 Navigate to the dashboard section  
+
     Kibana > Stack Management > Index Management > Data Streams
 
 Search for Metricbeat Dashboards, if the Metricbeat dashboard is loaded successfully, the following dashboards will appear on the screen.  
+
     Kibana > Dashboards
 
 # 4. Configuring System Metrics
 Go to Modules Folder
 
-    /etc/metricbeat/modules.d
+    cd /etc/metricbeat/modules.d
     mv system.yml.disabled system.yml
     sudo vim system.yml
 
-Paste the contents of prometheus.yml contents from /efk-setup/metricbeat/system.yml to /etc/metricbeat/modules.d/system.yml 
+Paste the contents of system.yml contents from /efk-setup/metricbeat/system.yml to /etc/metricbeat/modules.d/system.yml 
 
 Restart the metric beat service   
 
@@ -90,7 +92,7 @@ Restart the metric beat service
 Before you process this make sure node exporter is running on port 9100. 
 Post that go to modules folder   
 
-    /etc/metricbeat/modules.d
+    cd /etc/metricbeat/modules.d
     mv prometheus.yml.disabled prometheus.yml
     sudo vim prometheus.yml
 
@@ -104,10 +106,10 @@ Restart the metric beat service
 
 # 6. Add ElasticSearch Datasource in Grafana
 
-Login to Grafana
-Go to Home --> Connections --> Data sources --> Elasticsearch
-Add this datasource
-Give a name "Elasticsearch-Dev"
-URL: http://localhost:9200
-Click Save and test if no authentication
+Login to Grafana 
+Go to Home --> Connections --> Data sources --> Elasticsearch 
+Add this datasource 
+Give a name "Elasticsearch-Dev" 
+URL: http://localhost:9200 
+Click Save and test if no authentication 
 
