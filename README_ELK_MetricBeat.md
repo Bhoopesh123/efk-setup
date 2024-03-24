@@ -107,9 +107,14 @@ Restart the metric beat service
 # 6. Add ElasticSearch Datasource in Grafana
 
 Login to Grafana 
+
 Go to Home --> Connections --> Data sources --> Elasticsearch 
+
 Add this datasource 
+
 Give a name "Elasticsearch-Dev" 
+
 URL: http://localhost:9200 
+
 Click Save and test if no authentication 
 
