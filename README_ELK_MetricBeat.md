@@ -61,7 +61,10 @@ Update the metricbeat.yml with the following configurations in output. elasticse
 
 To Setup the default metricbeat dashboard on Kibana, please execute the following command. 
 
-    sudo metricbeat setup --dashboard
+    sudo metricbeat setup --dashboards  
+
+Loading dashboards (Kibana must be running and reachable)
+Loaded dashboards
 
 To verify the dashboard created from the above step, Please login into Kibana.
 Navigate to the dashboard section  
