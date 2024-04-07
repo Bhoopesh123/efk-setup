@@ -147,11 +147,9 @@ Paste in the token after the prompt.
 
 # 9. Configure MetricBeat on Application Server
 
-Go to /etc/metricbeat/metricbeat.yml and edit it.
+Go to /etc/metricbeat/metricbeat.yml and edit it.  
 
 # =================================== Kibana ===================================
-# Starting with Beats version 6.0.0, the dashboards are loaded via the Kibana API.
-# This requires a Kibana endpoint configuration.
 setup.kibana:
     host: "http://kibana.bhooopesh-grafana.com:5601"
 
