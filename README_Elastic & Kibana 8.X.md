@@ -162,3 +162,13 @@ Go to /etc/metricbeat/metricbeat.yml and edit it.
             key: /etc/elasticsearch/certs/elastic/elastic.key
             certificate: /etc/elasticsearch/certs/elastic/elastic.crt
             certificate_authorities: /etc/elasticsearch/certs/ca/ca.crt
+
+Enable Modules  
+
+    metricbeat modules enable nginx
+    sudo chown root metricbeat.yml 
+    sudo chown root modules.d/nginx.yml 
+    metricbeat setup -e
+    sudo systemctl enable metricbeat.service
+    sudo systemctl start metricbeat.service
+    sudo systemctl status metricbeat.service
