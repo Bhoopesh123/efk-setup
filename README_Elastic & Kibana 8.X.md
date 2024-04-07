@@ -144,6 +144,7 @@ Paste in the token after the prompt.
 
     curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-8.13.1-linux-x86_64.tar.gz
     tar xzvf metricbeat-8.13.1-linux-x86_64.tar.gz
+    cd metricbeat-8.13.1-linux-x86_64
 
 # 9. Configure MetricBeat on Application Server
 
@@ -165,10 +166,7 @@ Go to /etc/metricbeat/metricbeat.yml and edit it.
 
 Enable Modules  
 
-    metricbeat modules enable nginx
+    ./metricbeat modules enable nginx
     sudo chown root metricbeat.yml 
     sudo chown root modules.d/nginx.yml 
-    metricbeat setup -e
-    sudo systemctl enable metricbeat.service
-    sudo systemctl start metricbeat.service
-    sudo systemctl status metricbeat.service
+    ./metricbeat setup -e
