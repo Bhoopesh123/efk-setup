@@ -3,8 +3,6 @@
 
 The Elastic Stack — formerly known as the ELK Stack — is a collection of open-source software produced by Elastic which allows you to search, analyze, and visualize logs generated from any source in any format, a practice known as centralized logging. 
 
-The Elastic Stack has four main components:
-
 - Elasticsearch: A distributed RESTful search engine which stores all of the collected data.
 - Kibana: A web interface for searching and visualizing logs.
 
@@ -142,3 +140,39 @@ Paste in the token after the prompt.
     loginid: elastic:
     password: xfpwQ*W4tb0yBDRJrWi-
 
+# 8. Install MetricBeat on Application Server
+
+    curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-8.13.1-linux-x86_64.tar.gz
+    tar xzvf metricbeat-8.13.1-linux-x86_64.tar.gz
+
+# 9. Configure MetricBeat on Application Server
+
+Go to /etc/metricbeat/metricbeat.yml and edit it.
+
+# =================================== Kibana ===================================
+# Starting with Beats version 6.0.0, the dashboards are loaded via the Kibana API.
+# This requires a Kibana endpoint configuration.
+setup.kibana:
+    host: "http://kibana.bhooopesh-grafana.com:5601"
+
+# ---------------------------- Elasticsearch Output ----------------------------
+output.elasticsearch:
+  # Array of hosts to connect to.
+  hosts: ["https://elastic.bhooopesh-grafana.com:9200"]
+
+  # Performance preset - one of "balanced", "throughput", "scale",
+  # "latency", or "custom".
+  preset: balanced
+
+  # Protocol - either `http` (default) or `https`.
+  protocol: "https"
+
+  # Authentication credentials - either API key or username/password.
+  #api_key: "id:api_key"
+  username: "elastic"
+  password: "xfpwQ*W4tb0yBDRJrWi-"
+  ssl:
+    enabled: true
+    key: /etc/elasticsearch/certs/elastic/elastic.key
+    certificate: /etc/elasticsearch/certs/elastic/elastic.crt
+    certificate_authorities: /etc/elasticsearch/certs/ca/ca.crt
