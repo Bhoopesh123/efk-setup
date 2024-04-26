@@ -17,7 +17,7 @@ Please run the below commands with sudo permissions:
     apt-get install -y apt-transport-https;
     apt-get install -y elasticsearch;
 
-    The generated password for the elastic built-in superuser is : xfpwQ*W4tb0yBDRJrWi-
+    The generated password for the elastic built-in superuser is : J84dQrmhLgcW58yEuYrd
 
     Reset the password of the elastic built-in superuser with
     /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic
@@ -51,25 +51,24 @@ Go to the /etc/elasticsearch/elasticsearch.yml file. Edit the following fields:
 
     ...etc...
     cluster.name: es-demo
-    ...etc...
-    network.host: elastic.bhooopesh-grafana.com
-    ...etc...
     http.port: 9200
     network.host: 0.0.0.0
     ...etc...
     xpack.security.http.ssl:
-    enabled: true
-    key: certs/elastic/elastic.key
-    certificate: certs/elastic/elastic.crt
-    certificate_authorities: certs/ca/ca.crt
+        enabled: true
+        key: certs/elastic/elastic.key
+        certificate: certs/elastic/elastic.crt
+        certificate_authorities: certs/ca/ca.crt
     ...etc...
 
     chown -R elasticsearch:elasticsearch /etc/elasticsearch
 
     systemctl enable elasticsearch;
     systemctl start elasticsearch;
+    systemctl status elasticsearch;
 
-    curl -X GET -u elastic:xfpwQ*W4tb0yBDRJrWi- https://elastic.bhooopesh-grafana.com:9200 --cacert /etc/elasticsearch/certs/ca/ca.crt
+
+    curl -X GET -u elastic:cnOi+uBX678UvG=5vEZU https://elastic.bhooopesh-grafana.com:9200 --cacert /etc/elasticsearch/certs/ca/ca.crt
 
 # 4. Installing and Configuring the Kibana   
 
@@ -97,7 +96,7 @@ We will copy the /etc/elasticsearch/certs/kibana/* over to the kibana server kib
 
 # 6. Configure Kibana
 
-    mkdir /etc/kibana/certs/kibana -p
+    mkdir /etc/kibana/certs/kibana/ca -p
 
 Copy the certs from elastic server /etc/elasticsearch/certs/kibana/* to kibana server /etc/kibana/certs/kibana
 Go to the /etc/kibana/kibana.yml file. Edit the following fields:
@@ -111,14 +110,14 @@ Go to the /etc/kibana/kibana.yml file. Edit the following fields:
     server.ssl.certificateAuthorities: /etc/kibana/certs/kibana/ca/ca.crt
     elasticsearch.hosts: ["https://elastic.bhooopesh-grafana.com:9200"]
     elasticsearch.ssl.verificationMode: full
-    elasticsearch.ssl.certificateAuthorities: ["/etc/kibana/certs/ca/ca.crt"]
+    elasticsearch.ssl.certificateAuthorities: ["/etc/kibana/certs/kibana/ca/ca.crt"]
 
 CREATE SERVICE TOKEN
 Run this command on the Elasticsearch server:  
 
     /usr/share/elasticsearch/bin/elasticsearch-service-tokens create elastic/kibana kibana-token 
 
-SERVICE_TOKEN elastic/kibana/kibana-token = AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjpzSGZOZ2RDZFRzLVRadVBzUkVyQU1R
+SERVICE_TOKEN elastic/kibana/kibana-token = AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjpkd2lnUVJQdlRveS11YTh5TmNBWjN3
 
     chown -R elasticsearch:elasticsearch /etc/elasticsearch
     chown -R elasticsearch:elasticsearch service_tokens
@@ -138,7 +137,7 @@ Paste in the token after the prompt.
     systemctl enable kibana;
     systemctl start kibana;
     loginid: elastic:
-    password: xfpwQ*W4tb0yBDRJrWi-
+    password: cnOi+uBX678UvG=5vEZU
 
 # 8. Install MetricBeat on Application Server
 
@@ -151,22 +150,32 @@ Paste in the token after the prompt.
 Go to /etc/metricbeat/metricbeat.yml and edit it.  
 
     setup.kibana:
-        host: "http://kibana.bhooopesh-grafana.com:5601"
+        host: "https://kibana.bhooopesh-grafana.com:5601"
+        protocol: "https"
+        ssl:
+            enabled: true
+            key: /etc/elasticsearch/certs/elastic/kibana.key
+            certificate: /etc/elasticsearch/certs/elastic/kibana.crt
+            certificate_authorities: /etc/elasticsearch/certs/ca/ca.crt
+
     output.elasticsearch:
         hosts: ["https://elastic.bhooopesh-grafana.com:9200"]
         preset: balanced
         protocol: "https"
         username: "elastic"
-        password: "xfpwQ*W4tb0yBDRJrWi-"
+        password: "cnOi+uBX678UvG=5vEZU"
         ssl:
             enabled: true
             key: /etc/elasticsearch/certs/elastic/elastic.key
             certificate: /etc/elasticsearch/certs/elastic/elastic.crt
             certificate_authorities: /etc/elasticsearch/certs/ca/ca.crt
 
-Enable Modules  
+Install nginx
 
+    apt-get install -y nginx
+
+Enable Modules  
     ./metricbeat modules enable nginx
     sudo chown root metricbeat.yml 
     sudo chown root modules.d/nginx.yml 
-    ./metricbeat setup -e
+    sudo ./metricbeat -e
