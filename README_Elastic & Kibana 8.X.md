@@ -17,7 +17,7 @@ Please run the below commands with sudo permissions:
     apt-get install -y apt-transport-https;
     apt-get install -y elasticsearch;
 
-    The generated password for the elastic built-in superuser is : J84dQrmhLgcW58yEuYrd
+    The generated password for the elastic built-in superuser is : cnOi+uBX678UvG=5vEZU
 
     Reset the password of the elastic built-in superuser with
     /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic
@@ -147,7 +147,7 @@ Paste in the token after the prompt.
 
 # 9. Configure MetricBeat on Application Server
 
-Go to /etc/metricbeat/metricbeat.yml and edit it.  
+Go to metricbeat.yml and edit it.  
 
     setup.kibana:
         host: "https://kibana.bhooopesh-grafana.com:5601"
