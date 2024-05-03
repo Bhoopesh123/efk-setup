@@ -105,7 +105,8 @@ Copy the certificates in above folder from fleet server
 Confirm success under Fleet > Agents.
 
 # 5. DEBUGGING
-If you run into issues, you can find logs for elastic agent in:
+If you run into issues, you can find logs for elastic agent in:  
+
     /opt/Elastic/Agent/data/elastic-agent-<id>/logs
 
 
