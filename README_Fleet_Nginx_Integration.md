@@ -39,8 +39,6 @@ Add a Fleet Server
 
 You will need to edit the install command, so paste it into a file 
 
-
-
 Run the below command in elastic search server for generating certificates:  
 
     /usr/share/elasticsearch/bin/elasticsearch-certutil cert \
