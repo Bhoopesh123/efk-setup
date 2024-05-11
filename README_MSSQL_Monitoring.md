@@ -1,5 +1,5 @@
 
-# MSSQL Installation and Configuration
+# 1. MSSQL Installation and Configuration
 This guide describes how to get started quickly installing MSSQL on Linux RHEL9 machine.
 Reference Documenation: 
     https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-red-hat?view=sql-server-ver16&tabs=rhel9
@@ -21,7 +21,8 @@ Reference Documenation:
 
 Connect to SQL DB  
 
-    sqlcmd -S localhost -U sa -P '<YourPassword>'
+    sqlcmd -S localhost -U sa -P 'Jan@2020' -No
+
     CREATE DATABASE TestDB;
     SELECT Name from sys.databases;
     GO
@@ -41,7 +42,7 @@ Connect to SQL DB
     QUIT
 
 
-# 1. Installing and Configuring MetricBeat
+# 2. Installing and Configuring MetricBeat
 
     curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-8.13.1-linux-x86_64.tar.gz
     tar xzvf metricbeat-8.13.1-linux-x86_64.tar.gz
