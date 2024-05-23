@@ -2,6 +2,7 @@
 # 1. MSSQL Installation and Configuration
 This guide describes how to get started quickly installing MSSQL on Linux RHEL9 machine.  
 Reference Documenation: 
+
 https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-red-hat?view=sql-server-ver16&tabs=rhel9
 
 
