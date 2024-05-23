@@ -51,25 +51,25 @@ Connect to SQL DB
     vi metricbeat.yml
 
     setup.kibana:
-    host: "https://kibana.bhooopesh-grafana.com:5601"
-    protocol: "https"
-    ssl:
-        enabled: true
-        key: /etc/elasticsearch/certs/elastic/kibana.key
-        certificate: /etc/elasticsearch/certs/elastic/kibana.crt
-        certificate_authorities: /etc/elasticsearch/certs/ca/ca.crt
+        host: "https://kibana.bhooopesh-grafana.com:5601"
+        protocol: "https"
+        ssl:
+            enabled: true
+            key: /etc/elasticsearch/certs/elastic/kibana.key
+            certificate: /etc/elasticsearch/certs/elastic/kibana.crt
+            certificate_authorities: /etc/elasticsearch/certs/ca/ca.crt
 
     output.elasticsearch:
-    hosts: ["https://elastic.bhooopesh-grafana.com:9200"]
-    preset: balanced
-    protocol: "https"
-    username: "elastic"
-    password: "cnOi+uBX678UvG=5vEZU"
-    ssl:
-        enabled: true
-        key: /etc/elasticsearch/certs/elastic/elastic.key
-        certificate: /etc/elasticsearch/certs/elastic/elastic.crt
-        certificate_authorities: /etc/elasticsearch/certs/ca/ca.crt
+        hosts: ["https://elastic.bhooopesh-grafana.com:9200"]
+        preset: balanced
+        protocol: "https"
+        username: "elastic"
+        password: "cnOi+uBX678UvG=5vEZU"
+        ssl:
+            enabled: true
+            key: /etc/elasticsearch/certs/elastic/elastic.key
+            certificate: /etc/elasticsearch/certs/elastic/elastic.crt
+            certificate_authorities: /etc/elasticsearch/certs/ca/ca.crt
 
     cd /home/ec2-user/metricbeat-8.13.1-linux-x86_64/modules.d 
     vi mssql.yml 
@@ -88,3 +88,50 @@ Enable Metricbeat
     sudo chown root metricbeat.yml 
     sudo chown root modules.d/nginx.yml 
     sudo ./metricbeat -e &
+
+# 3. Installing and Configuring FileBeat
+
+    curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.13.4-linux-x86_64.tar.gz
+    tar xzvf filebeat-8.13.4-linux-x86_64.tar.gz
+
+    vi filebeat.yml
+
+    setup.kibana:
+        host: "https://kibana.bhooopesh-grafana.com:5601"
+        protocol: "https"
+        ssl:
+            enabled: true
+            key: /etc/elasticsearch/certs/elastic/kibana.key
+            certificate: /etc/elasticsearch/certs/elastic/kibana.crt
+            certificate_authorities: /etc/elasticsearch/certs/ca/ca.crt
+
+    output.elasticsearch:
+        hosts: ["https://elastic.bhooopesh-grafana.com:9200"]
+        preset: balanced
+        protocol: "https"
+        username: "elastic"
+        password: "cnOi+uBX678UvG=5vEZU"
+        ssl:
+            enabled: true
+            key: /etc/elasticsearch/certs/elastic/elastic.key
+            certificate: /etc/elasticsearch/certs/elastic/elastic.crt
+            certificate_authorities: /etc/elasticsearch/certs/ca/ca.crt
+
+    ./filebeat modules list
+    ./filebeat modules enable mssql
+    cd /home/ec2-user/filebeat-8.13.4-linux-x86_64/modules.d 
+    vi mssql.yml 
+
+    - module: mssql
+      # Fileset for native deployment
+      log:
+        enabled: true
+        # Set custom paths for the log files. If left empty,
+        # Filebeat will choose the paths depending on your OS.
+        var.paths: ["/var/opt/mssql/log/*.log*"]
+    
+    ./filebeat setup -e
+    sudo chown root filebeat.yml 
+    sudo chown root modules.d/nginx.yml 
+    sudo ./filebeat -e
+
