@@ -2,6 +2,7 @@
 # 1. MSSQL Installation and Configuration
 This guide describes how to get started quickly installing MSSQL on Linux RHEL9 machine.  
 Reference Documenation: 
+
     https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-red-hat?view=sql-server-ver16&tabs=rhel9
 
 
@@ -90,6 +91,9 @@ Enable Metricbeat
     sudo ./metricbeat -e &
 
 # 3. Installing and Configuring FileBeat
+
+Reference Documentation:  
+https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-installation-configuration.html
 
     curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.13.4-linux-x86_64.tar.gz
     tar xzvf filebeat-8.13.4-linux-x86_64.tar.gz
