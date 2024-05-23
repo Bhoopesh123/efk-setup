@@ -142,3 +142,8 @@ https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-installation-con
     sudo chown root modules.d/nginx.yml 
     sudo ./filebeat -e
 
+# 4. Visualize the Dashboards:
+Go to dashboards section and see below dashboards: 
+
+1. [Metricbeat MSSQL] Transaction log ECS
+2. [Metricbeat MSSQL] Performance ECS
