@@ -45,6 +45,10 @@ Connect to SQL DB
 
 # 2. Installing and Configuring MetricBeat
 
+Reference Documentation: 
+
+https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-installation-configuration.html
+
     curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-8.13.1-linux-x86_64.tar.gz
     tar xzvf metricbeat-8.13.1-linux-x86_64.tar.gz
     cd metricbeat-8.13.1-linux-x86_64
