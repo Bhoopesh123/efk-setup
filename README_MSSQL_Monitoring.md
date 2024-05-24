@@ -90,7 +90,7 @@ https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-installation
 Enable Metricbeat
 
     sudo chown root metricbeat.yml 
-    sudo chown root modules.d/nginx.yml 
+    sudo chown root modules.d/mssql.yml 
     sudo ./metricbeat -e &
 
 # 3. Installing and Configuring FileBeat
@@ -139,7 +139,7 @@ https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-installation-con
     
     ./filebeat setup -e
     sudo chown root filebeat.yml 
-    sudo chown root modules.d/nginx.yml 
+    sudo chown root modules.d/mssql.yml 
     sudo ./filebeat -e
 
 # 4. Visualize the Dashboards:
