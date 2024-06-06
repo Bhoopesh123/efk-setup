@@ -18,7 +18,7 @@ Add the below content in the configuration file if not present.
 
     filter {
     if "filebeat" in [message] {
-            mutate { add_tag => "bhoopesh" }
+            mutate { add_tag => "bhoopeshsharma" }
     }
     }
 
@@ -38,7 +38,7 @@ Add the below content in the configuration file if not present.
             }
     }
 
-    if "bhoopesh" in [tags] {
+    if "bhoopeshsharma" in [tags] {
         stdout { }
         email {
         to => "bhoopeshsharmal306@gmail.com"
@@ -51,7 +51,7 @@ Add the below content in the configuration file if not present.
         authentication => "plain"
         use_tls => true
         username => "bhoopeshsharmal306@gmail.com"
-        password => "exrgsgrygwhzdtfx"
+        password => "***********"
         }
     }
     }
@@ -60,6 +60,8 @@ Add the below content in the configuration file if not present.
 
 Run the logstash with below commands.  
 
+    cd /etc/logstash/conf.d
+    sudo cp -p 30-elasticsearch-output.conf /usr/share/logstash 
     sudo systemctl status logstash
     sudo systemctl stop logstash
     sudo systemctl start logstash
