@@ -1,0 +1,673 @@
+USER-SUPPLIED VALUES:
+clusterRole:
+  rules:
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    verbs:
+    - get
+collectors:
+  cluster:
+    config:
+      exporters:
+        debug:
+          verbosity: basic
+        otlp/gateway:
+          endpoint: http://opentelemetry-kube-stack-gateway-collector:4317
+          tls:
+            insecure: true
+      processors:
+        k8sattributes:
+          extract:
+            labels:
+            - from: pod
+              key: app.kubernetes.io/name
+              tag_name: app.label.name
+            - from: pod
+              key: app.kubernetes.io/version
+              tag_name: app.label.version
+            metadata:
+            - k8s.namespace.name
+            - k8s.deployment.name
+            - k8s.replicaset.name
+            - k8s.statefulset.name
+            - k8s.daemonset.name
+            - k8s.cronjob.name
+            - k8s.job.name
+            - k8s.node.name
+            - k8s.pod.name
+            - k8s.pod.ip
+            - k8s.pod.uid
+            - k8s.pod.start_time
+          passthrough: false
+          pod_association:
+          - sources:
+            - from: resource_attribute
+              name: k8s.pod.ip
+          - sources:
+            - from: resource_attribute
+              name: k8s.pod.uid
+          - sources:
+            - from: connection
+        resource/hostname:
+          attributes:
+          - action: upsert
+            from_attribute: k8s.node.name
+            key: host.name
+        resource/k8s:
+          attributes:
+          - action: insert
+            from_attribute: app.label.name
+            key: service.name
+          - action: insert
+            from_attribute: k8s.container.name
+            key: service.name
+          - action: delete
+            key: app.label.name
+          - action: insert
+            from_attribute: app.label.version
+            key: service.version
+          - action: delete
+            key: app.label.version
+        resourcedetection/aks:
+          aks:
+            resource_attributes:
+              k8s.cluster.name:
+                enabled: true
+          detectors:
+          - env
+          - aks
+          override: true
+          timeout: 2s
+        resourcedetection/eks:
+          detectors:
+          - env
+          - eks
+          eks:
+            resource_attributes:
+              k8s.cluster.name:
+                enabled: true
+          override: true
+          timeout: 15s
+        resourcedetection/gcp:
+          detectors:
+          - env
+          - gcp
+          override: true
+          timeout: 2s
+      receivers:
+        k8s_cluster:
+          allocatable_types_to_report:
+          - cpu
+          - memory
+          auth_type: serviceAccount
+          metrics:
+            k8s.pod.status_reason:
+              enabled: true
+          node_conditions_to_report:
+          - Ready
+          - MemoryPressure
+          resource_attributes:
+            k8s.container.status.last_terminated_reason:
+              enabled: true
+            k8s.kubelet.version:
+              enabled: true
+            os.description:
+              enabled: true
+            os.type:
+              enabled: true
+        k8sobjects:
+          objects:
+          - exclude_watch_type:
+            - DELETED
+            group: events.k8s.io
+            mode: watch
+            name: events
+      service:
+        pipelines:
+          logs:
+            exporters:
+            - debug
+            - otlp/gateway
+            processors:
+            - resourcedetection/eks
+            - resourcedetection/gcp
+            - resourcedetection/aks
+            - resource/hostname
+            receivers:
+            - k8sobjects
+          metrics:
+            exporters:
+            - debug
+            - otlp/gateway
+            processors:
+            - k8sattributes
+            - resourcedetection/eks
+            - resourcedetection/gcp
+            - resourcedetection/aks
+            - resource/k8s
+            - resource/hostname
+            receivers:
+            - k8s_cluster
+    env:
+    - name: ELASTIC_AGENT_OTEL
+      value: '"true"'
+  daemon:
+    config:
+      exporters:
+        debug:
+          verbosity: basic
+        otlp/gateway:
+          endpoint: http://opentelemetry-kube-stack-gateway-collector-headless:4317
+          tls:
+            insecure: true
+      processors:
+        batch: {}
+        batch/metrics:
+          send_batch_max_size: 0
+          timeout: 1s
+        k8sattributes:
+          extract:
+            labels:
+            - from: pod
+              key: app.kubernetes.io/name
+              tag_name: app.label.name
+            - from: pod
+              key: app.kubernetes.io/version
+              tag_name: app.label.version
+            metadata:
+            - k8s.namespace.name
+            - k8s.deployment.name
+            - k8s.replicaset.name
+            - k8s.statefulset.name
+            - k8s.daemonset.name
+            - k8s.cronjob.name
+            - k8s.job.name
+            - k8s.node.name
+            - k8s.pod.name
+            - k8s.pod.ip
+            - k8s.pod.uid
+            - k8s.pod.start_time
+          filter:
+            node_from_env_var: OTEL_K8S_NODE_NAME
+          passthrough: false
+          pod_association:
+          - sources:
+            - from: resource_attribute
+              name: k8s.pod.ip
+          - sources:
+            - from: resource_attribute
+              name: k8s.pod.uid
+          - sources:
+            - from: connection
+        resource/cloud:
+          attributes:
+          - action: insert
+            from_attribute: host.id
+            key: cloud.instance.id
+        resource/hostname:
+          attributes:
+          - action: upsert
+            from_attribute: k8s.node.name
+            key: host.name
+        resource/k8s:
+          attributes:
+          - action: insert
+            from_attribute: app.label.name
+            key: service.name
+          - action: insert
+            from_attribute: k8s.container.name
+            key: service.name
+          - action: delete
+            key: app.label.name
+          - action: insert
+            from_attribute: app.label.version
+            key: service.version
+          - action: delete
+            key: app.label.version
+        resourcedetection/aks:
+          aks:
+            resource_attributes:
+              k8s.cluster.name:
+                enabled: true
+          detectors:
+          - env
+          - aks
+          override: true
+          timeout: 2s
+        resourcedetection/eks:
+          detectors:
+          - env
+          - eks
+          eks:
+            resource_attributes:
+              k8s.cluster.name:
+                enabled: true
+          override: true
+          timeout: 15s
+        resourcedetection/gcp:
+          detectors:
+          - env
+          - gcp
+          override: true
+          timeout: 2s
+        resourcedetection/system:
+          detectors:
+          - system
+          - ec2
+          ec2:
+            resource_attributes:
+              host.id:
+                enabled: true
+              host.name:
+                enabled: false
+          system:
+            hostname_sources:
+            - os
+            resource_attributes:
+              host.arch:
+                enabled: true
+              host.cpu.cache.l2.size:
+                enabled: true
+              host.cpu.family:
+                enabled: true
+              host.cpu.model.id:
+                enabled: true
+              host.cpu.model.name:
+                enabled: true
+              host.cpu.stepping:
+                enabled: true
+              host.cpu.vendor.id:
+                enabled: true
+              host.id:
+                enabled: false
+              host.ip:
+                enabled: true
+              host.mac:
+                enabled: true
+              host.name:
+                enabled: true
+              os.description:
+                enabled: true
+              os.type:
+                enabled: true
+      receivers:
+        filelog:
+          exclude:
+          - /var/log/pods/*opentelemetry-kube-stack*/*/*.log
+          include:
+          - /var/log/pods/*/*/*.log
+          include_file_name: false
+          include_file_path: true
+          operators:
+          - id: container-parser
+            type: container
+          retry_on_failure:
+            enabled: true
+          start_at: end
+        hostmetrics:
+          collection_interval: 10s
+          root_path: /hostfs
+          scrapers:
+            cpu:
+              metrics:
+                system.cpu.logical.count:
+                  enabled: true
+                system.cpu.utilization:
+                  enabled: true
+            disk: {}
+            filesystem:
+              exclude_fs_types:
+                fs_types:
+                - autofs
+                - binfmt_misc
+                - bpf
+                - cgroup2
+                - configfs
+                - debugfs
+                - devpts
+                - devtmpfs
+                - fusectl
+                - hugetlbfs
+                - iso9660
+                - mqueue
+                - nsfs
+                - overlay
+                - proc
+                - procfs
+                - pstore
+                - rpc_pipefs
+                - securityfs
+                - selinuxfs
+                - squashfs
+                - sysfs
+                - tracefs
+                match_type: strict
+              exclude_mount_points:
+                match_type: regexp
+                mount_points:
+                - /dev/*
+                - /proc/*
+                - /sys/*
+                - /run/k3s/containerd/*
+                - /var/lib/docker/*
+                - /var/lib/kubelet/*
+                - /snap/*
+            load: {}
+            memory:
+              metrics:
+                system.memory.utilization:
+                  enabled: true
+            network: {}
+            process:
+              metrics:
+                process.disk.operations:
+                  enabled: true
+                process.memory.utilization:
+                  enabled: true
+                process.open_file_descriptors:
+                  enabled: true
+                process.threads:
+                  enabled: true
+              mute_process_exe_error: true
+              mute_process_io_error: true
+              mute_process_user_error: true
+            processes: {}
+        kubeletstats:
+          auth_type: serviceAccount
+          collection_interval: 20s
+          endpoint: ${env:OTEL_K8S_NODE_NAME}:10250
+          extra_metadata_labels:
+          - container.id
+          insecure_skip_verify: true
+          k8s_api_config:
+            auth_type: serviceAccount
+          metrics:
+            k8s.container.cpu_limit_utilization:
+              enabled: true
+            k8s.container.cpu_request_utilization:
+              enabled: true
+            k8s.container.memory_limit_utilization:
+              enabled: true
+            k8s.container.memory_request_utilization:
+              enabled: true
+            k8s.node.cpu.usage:
+              enabled: true
+            k8s.node.uptime:
+              enabled: true
+            k8s.pod.cpu.node.utilization:
+              enabled: true
+            k8s.pod.cpu.usage:
+              enabled: true
+            k8s.pod.cpu_limit_utilization:
+              enabled: true
+            k8s.pod.memory.node.utilization:
+              enabled: true
+            k8s.pod.memory_limit_utilization:
+              enabled: true
+          node: ${env:OTEL_K8S_NODE_NAME}
+        otlp:
+          protocols:
+            grpc:
+              endpoint: 0.0.0.0:4317
+            http:
+              endpoint: 0.0.0.0:4318
+      service:
+        pipelines:
+          logs/apm:
+            exporters:
+            - otlp/gateway
+            processors:
+            - batch
+            - resource/hostname
+            receivers:
+            - otlp
+          logs/node:
+            exporters:
+            - otlp/gateway
+            processors:
+            - batch
+            - k8sattributes
+            - resourcedetection/system
+            - resourcedetection/eks
+            - resourcedetection/gcp
+            - resourcedetection/aks
+            - resource/k8s
+            - resource/hostname
+            - resource/cloud
+            receivers:
+            - filelog
+          metrics/node/otel:
+            exporters:
+            - otlp/gateway
+            processors:
+            - batch/metrics
+            - k8sattributes
+            - resourcedetection/system
+            - resourcedetection/eks
+            - resourcedetection/gcp
+            - resourcedetection/aks
+            - resource/k8s
+            - resource/hostname
+            - resource/cloud
+            receivers:
+            - kubeletstats
+            - hostmetrics
+          metrics/otel-apm:
+            exporters:
+            - otlp/gateway
+            processors:
+            - batch/metrics
+            - resource/hostname
+            receivers:
+            - otlp
+          traces/apm:
+            exporters:
+            - otlp/gateway
+            processors:
+            - batch
+            - resource/hostname
+            receivers:
+            - otlp
+    env:
+    - name: HOST_PROC_MOUNTINFO
+      value: ""
+    - name: ELASTIC_AGENT_OTEL
+      value: '"true"'
+    hostNetwork: true
+    presets:
+      logsCollection:
+        enabled: true
+        storeCheckpoints: true
+    scrape_configs_file: ""
+    securityContext:
+      runAsGroup: 0
+      runAsUser: 0
+  gateway:
+    config:
+      connectors:
+        elasticapm: {}
+        routing:
+          default_pipelines:
+          - metrics/otel
+          error_mode: ignore
+          table:
+          - context: metric
+            pipelines:
+            - metrics/infra/ecs
+            - metrics/otel
+            statement: route() where instrumentation_scope.name == "github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kubeletstatsreceiver"
+              or IsMatch(instrumentation_scope.name, "github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/*")
+      exporters:
+        debug: {}
+        elasticsearch/ecs:
+          api_key: ${env:ELASTIC_API_KEY}
+          endpoints:
+          - ${env:ELASTIC_ENDPOINT}
+          mapping:
+            mode: ecs
+        elasticsearch/otel:
+          api_key: ${env:ELASTIC_API_KEY}
+          endpoints:
+          - ${env:ELASTIC_ENDPOINT}
+          logs_dynamic_index:
+            enabled: true
+          mapping:
+            mode: otel
+          metrics_dynamic_index:
+            enabled: true
+          traces_dynamic_index:
+            enabled: true
+      processors:
+        attributes/dataset:
+          actions:
+          - action: upsert
+            from_attribute: data_stream.dataset
+            key: event.dataset
+        batch:
+          send_batch_max_size: 1500
+          send_batch_size: 1000
+          timeout: 1s
+        batch/metrics:
+          send_batch_max_size: 0
+          timeout: 1s
+        elasticinframetrics:
+          add_k8s_metrics: true
+          add_system_metrics: true
+          drop_original: true
+        elastictrace: {}
+        resource/process:
+          attributes:
+          - action: delete
+            key: process.executable.name
+          - action: delete
+            key: process.executable.path
+      receivers:
+        otlp:
+          protocols:
+            grpc:
+              endpoint: ${env:MY_POD_IP}:4317
+            http:
+              endpoint: ${env:MY_POD_IP}:4318
+      service:
+        pipelines:
+          logs:
+            exporters:
+            - debug
+            - elasticapm
+            - elasticsearch/otel
+            processors:
+            - batch
+            receivers:
+            - otlp
+          metrics:
+            exporters:
+            - routing
+            receivers:
+            - otlp
+          metrics/aggregated-otel-metrics:
+            exporters:
+            - debug
+            - elasticsearch/otel
+            processors: null
+            receivers:
+            - elasticapm
+          metrics/infra/ecs:
+            exporters:
+            - debug
+            - elasticsearch/ecs
+            processors:
+            - elasticinframetrics
+            - attributes/dataset
+            - resource/process
+            - batch/metrics
+            receivers:
+            - routing
+          metrics/otel:
+            exporters:
+            - debug
+            - elasticsearch/otel
+            processors:
+            - batch
+            receivers:
+            - routing
+          traces:
+            exporters:
+            - debug
+            - elasticapm
+            - elasticsearch/otel
+            processors:
+            - batch
+            - elastictrace
+            receivers:
+            - otlp
+    enabled: true
+    env:
+    - name: ELASTIC_AGENT_OTEL
+      value: '"true"'
+    - name: ELASTIC_ENDPOINT
+      valueFrom:
+        secretKeyRef:
+          key: elastic_endpoint
+          name: elastic-secret-otel
+    - name: ELASTIC_API_KEY
+      valueFrom:
+        secretKeyRef:
+          key: elastic_api_key
+          name: elastic-secret-otel
+    - name: GOMAXPROCS
+      valueFrom:
+        resourceFieldRef:
+          resource: limits.cpu
+    - name: GOMEMLIMIT
+      value: 1025MiB
+    replicas: 2
+    resources:
+      limits:
+        cpu: 1500m
+        memory: 1500Mi
+      requests:
+        cpu: 100m
+        memory: 500Mi
+    suffix: gateway
+crds:
+  create: true
+defaultCRConfig:
+  image:
+    repository: docker.elastic.co/elastic-agent/elastic-agent
+    tag: 9.0.0
+  targetAllocator:
+    enabled: false
+instrumentation:
+  dotnet:
+    image: docker.elastic.co/observability/elastic-otel-dotnet:edge
+  enabled: true
+  exporter:
+    endpoint: http://opentelemetry-kube-stack-daemon-collector.opentelemetry-operator-system.svc.cluster.local:4318
+  go:
+    image: ghcr.io/open-telemetry/opentelemetry-go-instrumentation/autoinstrumentation-go:v0.14.0-alpha
+  java:
+    image: docker.elastic.co/observability/elastic-otel-javaagent:1.0.0
+  name: elastic-instrumentation
+  nodejs:
+    image: docker.elastic.co/observability/elastic-otel-node:0.4.1
+  propagators:
+  - tracecontext
+  - baggage
+  - b3
+  python:
+    image: docker.elastic.co/observability/elastic-otel-python:0.3.0
+  sampler:
+    argument: "1.0"
+    type: parentbased_traceidratio
+opentelemetry-operator:
+  admissionWebhooks:
+    autoGenerateCert:
+      enabled: true
+      recreate: true
+    certManager:
+      enabled: false
+  manager:
+    extraArgs:
+    - --enable-go-instrumentation

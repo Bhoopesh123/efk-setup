@@ -1,0 +1,1852 @@
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: opentelemetry-operator
+  namespace: opentelemetry-operator-system
+  labels:
+    helm.sh/chart: opentelemetry-operator-0.71.1
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/version: "0.110.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: opentelemetry-kube-stack
+    
+    app.kubernetes.io/component: controller-manager
+---
+# Source: opentelemetry-kube-stack/templates/hooks.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: delete-resources-sa
+  annotations:
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    helm.sh/chart: opentelemetry-operator-0.71.1
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/version: "0.110.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: opentelemetry-kube-stack
+    
+    app.kubernetes.io/component: controller-manager
+  name: opentelemetry-kube-stack-opentelemetry-operator-manager
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - persistentvolumeclaims
+      - persistentvolumes
+      - pods
+      - serviceaccounts
+      - services
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - apps
+    resources:
+      - daemonsets
+      - deployments
+      - statefulsets
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - apps
+      - extensions
+    resources:
+      - replicasets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - config.openshift.io
+    resources:
+      - infrastructures
+      - infrastructures/status
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - create
+      - get
+      - list
+      - update
+  - apiGroups:
+      - monitoring.coreos.com
+    resources:
+      - podmonitors
+      - servicemonitors
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - opentelemetry.io
+    resources:
+      - instrumentations
+    verbs:
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - opentelemetry.io
+    resources:
+      - opampbridges
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - opentelemetry.io
+    resources:
+      - opampbridges/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - opentelemetry.io
+    resources:
+      - opampbridges/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - opentelemetry.io
+    resources:
+      - opentelemetrycollectors
+    verbs:
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - opentelemetry.io
+    resources:
+      - opentelemetrycollectors/finalizers
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - opentelemetry.io
+    resources:
+      - opentelemetrycollectors/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - policy
+    resources:
+      - poddisruptionbudgets
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - route.openshift.io
+    resources:
+      - routes
+      - routes/custom-host
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    helm.sh/chart: opentelemetry-operator-0.71.1
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/version: "0.110.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: opentelemetry-kube-stack
+    
+    app.kubernetes.io/component: controller-manager
+  name: opentelemetry-kube-stack-opentelemetry-operator-metrics
+rules:
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    helm.sh/chart: opentelemetry-operator-0.71.1
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/version: "0.110.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: opentelemetry-kube-stack
+    
+    app.kubernetes.io/component: controller-manager
+  name: opentelemetry-kube-stack-opentelemetry-operator-proxy
+rules:
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
+---
+# Source: opentelemetry-kube-stack/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: opentelemetry-kube-stack-collector
+rules:
+- apiGroups: [""]
+  resources:
+  - namespaces
+  - nodes
+  - nodes/proxy
+  - nodes/metrics
+  - nodes/stats
+  - services
+  - endpoints
+  - pods
+  - events
+  - secrets
+  - persistentvolumeclaims
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["monitoring.coreos.com"]
+  resources:
+  - servicemonitors
+  - podmonitors
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets
+  - deployments
+  - replicasets
+  - statefulsets
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["discovery.k8s.io"]
+  resources:
+  - endpointslices
+  verbs: ["get", "list", "watch"]
+- nonResourceURLs: ["/metrics", "/metrics/cadvisor"]
+  verbs: ["get"]
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+
+- apiGroups:
+  - ""
+  resources:
+  - events
+  - namespaces
+  - namespaces/status
+  - nodes
+  - nodes/spec
+  - pods
+  - pods/status
+  - replicationcontrollers
+  - replicationcontrollers/status
+  - resourcequotas
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets
+  - deployments
+  - replicasets
+  - statefulsets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  resources:
+  - daemonsets
+  - deployments
+  - replicasets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  - cronjobs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+    - autoscaling
+  resources:
+    - horizontalpodautoscalers
+  verbs:
+    - get
+    - list
+    - watch
+- apiGroups: ["events.k8s.io"]
+  resources: ["events"]
+  verbs: ["watch", "list"]
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    helm.sh/chart: opentelemetry-operator-0.71.1
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/version: "0.110.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: opentelemetry-kube-stack
+    
+    app.kubernetes.io/component: controller-manager
+  name: opentelemetry-kube-stack-opentelemetry-operator-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: opentelemetry-kube-stack-opentelemetry-operator-manager
+subjects:
+  - kind: ServiceAccount
+    name: opentelemetry-operator
+    namespace: opentelemetry-operator-system
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    helm.sh/chart: opentelemetry-operator-0.71.1
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/version: "0.110.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: opentelemetry-kube-stack
+    
+    app.kubernetes.io/component: controller-manager
+  name: opentelemetry-kube-stack-opentelemetry-operator-proxy
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: opentelemetry-kube-stack-opentelemetry-operator-proxy
+subjects:
+  - kind: ServiceAccount
+    name: opentelemetry-operator
+    namespace: opentelemetry-operator-system
+---
+# Source: opentelemetry-kube-stack/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: opentelemetry-kube-stack-cluster-stats
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: opentelemetry-kube-stack-collector
+subjects:
+- kind: ServiceAccount
+  # quirk of the Operator
+  name: "opentelemetry-kube-stack-cluster-stats-collector"
+  namespace: opentelemetry-operator-system
+---
+# Source: opentelemetry-kube-stack/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: opentelemetry-kube-stack-daemon
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: opentelemetry-kube-stack-collector
+subjects:
+- kind: ServiceAccount
+  # quirk of the Operator
+  name: "opentelemetry-kube-stack-daemon-collector"
+  namespace: opentelemetry-operator-system
+---
+# Source: opentelemetry-kube-stack/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: opentelemetry-kube-stack-gateway
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: opentelemetry-kube-stack-collector
+subjects:
+- kind: ServiceAccount
+  # quirk of the Operator
+  name: "opentelemetry-kube-stack-gateway-collector"
+  namespace: opentelemetry-operator-system
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    helm.sh/chart: opentelemetry-operator-0.71.1
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/version: "0.110.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: opentelemetry-kube-stack
+    
+    app.kubernetes.io/component: controller-manager
+  name: opentelemetry-kube-stack-opentelemetry-operator-leader-election
+  namespace: opentelemetry-operator-system
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps/status
+    verbs:
+      - get
+      - update
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+---
+# Source: opentelemetry-kube-stack/templates/hooks.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: delete-resources-role
+  annotations:
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+rules:
+  - apiGroups:
+      - opentelemetry.io
+    resources:
+      - instrumentations
+      - opampbridges
+      - opentelemetrycollectors
+    verbs:
+      - get
+      - list
+      - delete
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    helm.sh/chart: opentelemetry-operator-0.71.1
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/version: "0.110.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: opentelemetry-kube-stack
+    
+    app.kubernetes.io/component: controller-manager
+  name: opentelemetry-kube-stack-opentelemetry-operator-leader-election
+  namespace: opentelemetry-operator-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: opentelemetry-kube-stack-opentelemetry-operator-leader-election
+subjects:
+  - kind: ServiceAccount
+    name: opentelemetry-operator
+    namespace: opentelemetry-operator-system
+---
+# Source: opentelemetry-kube-stack/templates/hooks.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: delete-resources-rolebinding
+  annotations:
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: delete-resources-role
+subjects:
+  - kind: ServiceAccount
+    name: delete-resources-sa
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    helm.sh/chart: opentelemetry-operator-0.71.1
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/version: "0.110.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: opentelemetry-kube-stack
+    
+    app.kubernetes.io/component: controller-manager
+  name: opentelemetry-kube-stack-opentelemetry-operator
+  namespace: opentelemetry-operator-system
+spec:
+  ports:
+    - name: https
+      port: 8443
+      protocol: TCP
+      targetPort: https
+    - name: metrics
+      port: 8080
+      protocol: TCP
+      targetPort: metrics
+  selector:
+      app.kubernetes.io/name: opentelemetry-operator
+      app.kubernetes.io/component: controller-manager
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    helm.sh/chart: opentelemetry-operator-0.71.1
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/version: "0.110.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: opentelemetry-kube-stack
+    
+    app.kubernetes.io/component: controller-manager
+  name: opentelemetry-kube-stack-opentelemetry-operator-webhook
+  namespace: opentelemetry-operator-system
+spec:
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: webhook-server
+  selector:
+      app.kubernetes.io/name: opentelemetry-operator
+      app.kubernetes.io/component: controller-manager
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    helm.sh/chart: opentelemetry-operator-0.71.1
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/version: "0.110.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: opentelemetry-kube-stack
+    
+    app.kubernetes.io/component: controller-manager
+  name: opentelemetry-kube-stack-opentelemetry-operator
+  namespace: opentelemetry-operator-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-operator
+      app.kubernetes.io/component: controller-manager
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+      labels:
+        app.kubernetes.io/name: opentelemetry-operator
+        app.kubernetes.io/component: controller-manager
+    spec:
+      hostNetwork: false
+      containers:
+        - args:
+            - --metrics-addr=0.0.0.0:8080
+            - --enable-leader-election
+            - --health-probe-addr=:8081
+            - --webhook-port=9443
+            - --collector-image=otel/opentelemetry-collector-k8s:0.110.0
+            - --enable-go-instrumentation
+          command:
+            - /manager
+          env:
+            - name: ENABLE_WEBHOOKS
+              value: "true"
+          image: "ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:0.110.0"
+          name: manager
+          ports:
+            - containerPort: 8080
+              name: metrics
+              protocol: TCP
+            - containerPort: 9443
+              name: webhook-server
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources: 
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 64Mi
+          volumeMounts:
+            - mountPath: /tmp/k8s-webhook-server/serving-certs
+              name: cert
+              readOnly: true
+        
+        - args:
+            - --secure-listen-address=0.0.0.0:8443
+            - --upstream=http://127.0.0.1:8080/
+            - --logtostderr=true
+            - --v=0
+          image: "quay.io/brancz/kube-rbac-proxy:v0.15.0"
+          name: kube-rbac-proxy
+          ports:
+            - containerPort: 8443
+              name: https
+              protocol: TCP
+          resources: 
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 5m
+              memory: 64Mi
+      serviceAccountName: opentelemetry-operator
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: opentelemetry-kube-stack-opentelemetry-operator-controller-manager-service-cert
+      securityContext:
+        fsGroup: 65532
+        runAsGroup: 65532
+        runAsNonRoot: true
+        runAsUser: 65532
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/admission-webhooks/operator-webhook.yaml
+---
+---
+# Source: opentelemetry-kube-stack/templates/instrumentation.yaml
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: elastic-instrumentation
+  labels:
+    helm.sh/chart: opentelemetry-kube-stack-0.3.9
+    app.kubernetes.io/version: "0.107.0"
+    app.kubernetes.io/managed-by: Helm
+    release: "opentelemetry-kube-stack"    
+spec:
+  exporter:
+    endpoint: http://opentelemetry-kube-stack-daemon-collector.opentelemetry-operator-system.svc.cluster.local:4318
+  propagators:
+    - tracecontext
+    - baggage
+    - b3
+  sampler:
+    argument: "1.0"
+    type: parentbased_traceidratio
+  env:    
+  resource:
+    addK8sUIDAttributes: true
+    resourceAttributes: {}
+  java:
+    image: docker.elastic.co/observability/elastic-otel-javaagent:1.0.0
+  nodejs:
+    image: docker.elastic.co/observability/elastic-otel-node:0.4.1
+  python:
+    image: docker.elastic.co/observability/elastic-otel-python:0.3.0
+  dotnet:
+    image: docker.elastic.co/observability/elastic-otel-dotnet:edge
+  go:
+    image: ghcr.io/open-telemetry/opentelemetry-go-instrumentation/autoinstrumentation-go:v0.14.0-alpha
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/admission-webhooks/operator-webhook.yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  labels:
+    helm.sh/chart: opentelemetry-operator-0.71.1
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/version: "0.110.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: opentelemetry-kube-stack
+    
+    app.kubernetes.io/component: webhook
+  name: opentelemetry-kube-stack-opentelemetry-operator-mutation
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURSakNDQWk2Z0F3SUJBZ0lSQUswcm5mNDlaYzR0TTYwamZYQ3dqTlV3RFFZSktvWklodmNOQVFFTEJRQXcKTFRFck1Da0dBMVVFQXhNaWIzQmxiblJsYkdWdFpYUnllUzF2Y0dWeVlYUnZjaTF2Y0dWeVlYUnZjaTFqWVRBZQpGdzB5TlRBME1Ua3hOREV3TlRGYUZ3MHlOakEwTVRreE5ERXdOVEZhTUMweEt6QXBCZ05WQkFNVEltOXdaVzUwClpXeGxiV1YwY25rdGIzQmxjbUYwYjNJdGIzQmxjbUYwYjNJdFkyRXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUEKQTRJQkR3QXdnZ0VLQW9JQkFRQythMnNLRFhUM0pxU0F4Lzk5WWsyWXd4NlVGWjNMcXM1VGNRTGlxaDdBS1lKcwo1MHBOM3FIenFwck91RmI4ZytPeW9NbnhYOFdwWDVtZ2NVRU5PYkNISXJIUUlIR3JRYWQrTUVPdHJBSFdmbXNxCno4R2R6UjRZNnJnYzJaZjdHTlBqOUVKR3ZRUFR3TVZpamh0V0FVNm9zalVoNWI3L0NuT0QwVGRUZHpGeDZ0ekcKcGJmbGZIZHdnck8yU212bGdaMHJVY3drdENKZ2hqYlJTQ1Z0eWYvN0REOGdwcTNGRDhwY2o5UkdDVEJlaVppegpCZ05ULzhDTGVrYVpBLzVlMnpTV05YdGlxZ1cyaWVYYUVjUSt4SnRBSURaVnBacFpIL3BvVEExOXhKalRINWlNCjlxWG95OGJYVGFIei9HVUU2QUdPNGhxSU14SWxENC9zdGVzY1J2SUhBZ01CQUFHallUQmZNQTRHQTFVZER3RUIKL3dRRUF3SUNwREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0R3WURWUjBUQVFILwpCQVV3QXdFQi96QWRCZ05WSFE0RUZnUVVMQnl0b3NBdy9oNkZQQzZNdnN3Zml1cDVseWN3RFFZSktvWklodmNOCkFRRUxCUUFEZ2dFQkFEdG43ZmducVg0cXB2VjhMdFN4M3VXaGJYWU1NSVpKeWNIQjJoRDZjVGluQkF5MnZaSEcKVTN0aWZ5Y0NvVDlhSEVUWXVjYXRITjd0R1FuY0p1dFdhZlVuU1RFY0YzZVI1b1ZieEZJNWJrK3MrNThnSEFDawo0R25icm82cENpaUFrSmdaOEhTZ0lRUGNPV2ZvMHp3WUpPcjhKYU1OSDFqcUlDWmo0ZDZkMzdJVG1BZWMwZnJhClJhVnZGWUZQUEt1WTdieFRwNjN5RHMzc2RNQVE2NHBDa3VSMDlxK2p1eFJacUZDcXNlVnN1amhIcm5EOW01L2YKQnpCWWx6VFJVYWFxZFg1VjQ1aUZpT09Uak1CM3UxNEpsbkp6VVEzUVl1Q21HMUpaT3FaZGJyekhPRzJIcUtRWApEalhadm82UjJidlROMUFHczNaRjhINVJCWEJUSDZVM09BMD0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+      service:
+        name: opentelemetry-kube-stack-opentelemetry-operator-webhook
+        namespace: opentelemetry-operator-system
+        path: /mutate-opentelemetry-io-v1alpha1-instrumentation
+        port: 443
+    failurePolicy: Ignore
+    name: minstrumentation.kb.io
+    rules:
+    - apiGroups:
+        - opentelemetry.io
+      apiVersions:
+        - v1alpha1
+      operations:
+        - CREATE
+        - UPDATE
+      resources:
+        - instrumentations
+      scope: Namespaced
+    sideEffects: None
+    timeoutSeconds: 10
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURSakNDQWk2Z0F3SUJBZ0lSQUswcm5mNDlaYzR0TTYwamZYQ3dqTlV3RFFZSktvWklodmNOQVFFTEJRQXcKTFRFck1Da0dBMVVFQXhNaWIzQmxiblJsYkdWdFpYUnllUzF2Y0dWeVlYUnZjaTF2Y0dWeVlYUnZjaTFqWVRBZQpGdzB5TlRBME1Ua3hOREV3TlRGYUZ3MHlOakEwTVRreE5ERXdOVEZhTUMweEt6QXBCZ05WQkFNVEltOXdaVzUwClpXeGxiV1YwY25rdGIzQmxjbUYwYjNJdGIzQmxjbUYwYjNJdFkyRXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUEKQTRJQkR3QXdnZ0VLQW9JQkFRQythMnNLRFhUM0pxU0F4Lzk5WWsyWXd4NlVGWjNMcXM1VGNRTGlxaDdBS1lKcwo1MHBOM3FIenFwck91RmI4ZytPeW9NbnhYOFdwWDVtZ2NVRU5PYkNISXJIUUlIR3JRYWQrTUVPdHJBSFdmbXNxCno4R2R6UjRZNnJnYzJaZjdHTlBqOUVKR3ZRUFR3TVZpamh0V0FVNm9zalVoNWI3L0NuT0QwVGRUZHpGeDZ0ekcKcGJmbGZIZHdnck8yU212bGdaMHJVY3drdENKZ2hqYlJTQ1Z0eWYvN0REOGdwcTNGRDhwY2o5UkdDVEJlaVppegpCZ05ULzhDTGVrYVpBLzVlMnpTV05YdGlxZ1cyaWVYYUVjUSt4SnRBSURaVnBacFpIL3BvVEExOXhKalRINWlNCjlxWG95OGJYVGFIei9HVUU2QUdPNGhxSU14SWxENC9zdGVzY1J2SUhBZ01CQUFHallUQmZNQTRHQTFVZER3RUIKL3dRRUF3SUNwREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0R3WURWUjBUQVFILwpCQVV3QXdFQi96QWRCZ05WSFE0RUZnUVVMQnl0b3NBdy9oNkZQQzZNdnN3Zml1cDVseWN3RFFZSktvWklodmNOCkFRRUxCUUFEZ2dFQkFEdG43ZmducVg0cXB2VjhMdFN4M3VXaGJYWU1NSVpKeWNIQjJoRDZjVGluQkF5MnZaSEcKVTN0aWZ5Y0NvVDlhSEVUWXVjYXRITjd0R1FuY0p1dFdhZlVuU1RFY0YzZVI1b1ZieEZJNWJrK3MrNThnSEFDawo0R25icm82cENpaUFrSmdaOEhTZ0lRUGNPV2ZvMHp3WUpPcjhKYU1OSDFqcUlDWmo0ZDZkMzdJVG1BZWMwZnJhClJhVnZGWUZQUEt1WTdieFRwNjN5RHMzc2RNQVE2NHBDa3VSMDlxK2p1eFJacUZDcXNlVnN1amhIcm5EOW01L2YKQnpCWWx6VFJVYWFxZFg1VjQ1aUZpT09Uak1CM3UxNEpsbkp6VVEzUVl1Q21HMUpaT3FaZGJyekhPRzJIcUtRWApEalhadm82UjJidlROMUFHczNaRjhINVJCWEJUSDZVM09BMD0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+      service:
+        name: opentelemetry-kube-stack-opentelemetry-operator-webhook
+        namespace: opentelemetry-operator-system
+        path: /mutate-opentelemetry-io-v1beta1-opentelemetrycollector
+        port: 443
+    failurePolicy: Ignore
+    name: mopentelemetrycollectorbeta.kb.io
+    rules:
+      - apiGroups:
+          - opentelemetry.io
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - opentelemetrycollectors
+        scope: Namespaced
+    sideEffects: None
+    timeoutSeconds: 10
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURSakNDQWk2Z0F3SUJBZ0lSQUswcm5mNDlaYzR0TTYwamZYQ3dqTlV3RFFZSktvWklodmNOQVFFTEJRQXcKTFRFck1Da0dBMVVFQXhNaWIzQmxiblJsYkdWdFpYUnllUzF2Y0dWeVlYUnZjaTF2Y0dWeVlYUnZjaTFqWVRBZQpGdzB5TlRBME1Ua3hOREV3TlRGYUZ3MHlOakEwTVRreE5ERXdOVEZhTUMweEt6QXBCZ05WQkFNVEltOXdaVzUwClpXeGxiV1YwY25rdGIzQmxjbUYwYjNJdGIzQmxjbUYwYjNJdFkyRXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUEKQTRJQkR3QXdnZ0VLQW9JQkFRQythMnNLRFhUM0pxU0F4Lzk5WWsyWXd4NlVGWjNMcXM1VGNRTGlxaDdBS1lKcwo1MHBOM3FIenFwck91RmI4ZytPeW9NbnhYOFdwWDVtZ2NVRU5PYkNISXJIUUlIR3JRYWQrTUVPdHJBSFdmbXNxCno4R2R6UjRZNnJnYzJaZjdHTlBqOUVKR3ZRUFR3TVZpamh0V0FVNm9zalVoNWI3L0NuT0QwVGRUZHpGeDZ0ekcKcGJmbGZIZHdnck8yU212bGdaMHJVY3drdENKZ2hqYlJTQ1Z0eWYvN0REOGdwcTNGRDhwY2o5UkdDVEJlaVppegpCZ05ULzhDTGVrYVpBLzVlMnpTV05YdGlxZ1cyaWVYYUVjUSt4SnRBSURaVnBacFpIL3BvVEExOXhKalRINWlNCjlxWG95OGJYVGFIei9HVUU2QUdPNGhxSU14SWxENC9zdGVzY1J2SUhBZ01CQUFHallUQmZNQTRHQTFVZER3RUIKL3dRRUF3SUNwREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0R3WURWUjBUQVFILwpCQVV3QXdFQi96QWRCZ05WSFE0RUZnUVVMQnl0b3NBdy9oNkZQQzZNdnN3Zml1cDVseWN3RFFZSktvWklodmNOCkFRRUxCUUFEZ2dFQkFEdG43ZmducVg0cXB2VjhMdFN4M3VXaGJYWU1NSVpKeWNIQjJoRDZjVGluQkF5MnZaSEcKVTN0aWZ5Y0NvVDlhSEVUWXVjYXRITjd0R1FuY0p1dFdhZlVuU1RFY0YzZVI1b1ZieEZJNWJrK3MrNThnSEFDawo0R25icm82cENpaUFrSmdaOEhTZ0lRUGNPV2ZvMHp3WUpPcjhKYU1OSDFqcUlDWmo0ZDZkMzdJVG1BZWMwZnJhClJhVnZGWUZQUEt1WTdieFRwNjN5RHMzc2RNQVE2NHBDa3VSMDlxK2p1eFJacUZDcXNlVnN1amhIcm5EOW01L2YKQnpCWWx6VFJVYWFxZFg1VjQ1aUZpT09Uak1CM3UxNEpsbkp6VVEzUVl1Q21HMUpaT3FaZGJyekhPRzJIcUtRWApEalhadm82UjJidlROMUFHczNaRjhINVJCWEJUSDZVM09BMD0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+      service:
+        name: opentelemetry-kube-stack-opentelemetry-operator-webhook
+        namespace: opentelemetry-operator-system
+        path: /mutate-v1-pod
+        port: 443
+    failurePolicy: Ignore
+    name: mpod.kb.io
+    rules:
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+        resources:
+          - pods
+        scope: Namespaced
+    sideEffects: None
+    timeoutSeconds: 10
+---
+# Source: opentelemetry-kube-stack/templates/collector.yaml
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: opentelemetry-kube-stack-cluster-stats
+  namespace: opentelemetry-operator-system
+  labels:
+    helm.sh/chart: opentelemetry-kube-stack-0.3.9
+    app.kubernetes.io/version: "0.107.0"
+    app.kubernetes.io/managed-by: Helm
+    release: "opentelemetry-kube-stack"        
+spec:
+  managementState: managed
+  mode: deployment
+  config:
+    exporters:
+      debug:
+        verbosity: basic
+      otlp/gateway:
+        endpoint: http://opentelemetry-kube-stack-gateway-collector:4317
+        tls:
+          insecure: true
+    processors:
+      batch:
+        send_batch_max_size: 1500
+        send_batch_size: 1000
+        timeout: 1s
+      k8sattributes:
+        extract:
+          labels:
+          - from: pod
+            key: app.kubernetes.io/name
+            tag_name: app.label.name
+          - from: pod
+            key: app.kubernetes.io/version
+            tag_name: app.label.version
+          metadata:
+          - k8s.namespace.name
+          - k8s.deployment.name
+          - k8s.replicaset.name
+          - k8s.statefulset.name
+          - k8s.daemonset.name
+          - k8s.cronjob.name
+          - k8s.job.name
+          - k8s.node.name
+          - k8s.pod.name
+          - k8s.pod.ip
+          - k8s.pod.uid
+          - k8s.pod.start_time
+        passthrough: false
+        pod_association:
+        - sources:
+          - from: resource_attribute
+            name: k8s.pod.ip
+        - sources:
+          - from: resource_attribute
+            name: k8s.pod.uid
+        - sources:
+          - from: connection
+      resource/hostname:
+        attributes:
+        - action: upsert
+          from_attribute: k8s.node.name
+          key: host.name
+      resource/k8s:
+        attributes:
+        - action: insert
+          from_attribute: app.label.name
+          key: service.name
+        - action: insert
+          from_attribute: k8s.container.name
+          key: service.name
+        - action: delete
+          key: app.label.name
+        - action: insert
+          from_attribute: app.label.version
+          key: service.version
+        - action: delete
+          key: app.label.version
+      resourcedetection/aks:
+        aks:
+          resource_attributes:
+            k8s.cluster.name:
+              enabled: true
+        detectors:
+        - env
+        - aks
+        override: true
+        timeout: 2s
+      resourcedetection/eks:
+        detectors:
+        - env
+        - eks
+        eks:
+          resource_attributes:
+            k8s.cluster.name:
+              enabled: true
+        override: true
+        timeout: 15s
+      resourcedetection/env:
+        detectors:
+        - env
+        override: false
+        timeout: 2s
+      resourcedetection/gcp:
+        detectors:
+        - env
+        - gcp
+        override: true
+        timeout: 2s
+    receivers:
+      k8s_cluster:
+        allocatable_types_to_report:
+        - cpu
+        - memory
+        auth_type: serviceAccount
+        collection_interval: 10s
+        metrics:
+          k8s.pod.status_reason:
+            enabled: true
+        node_conditions_to_report:
+        - Ready
+        - MemoryPressure
+        resource_attributes:
+          k8s.container.status.last_terminated_reason:
+            enabled: true
+          k8s.kubelet.version:
+            enabled: true
+          os.description:
+            enabled: true
+          os.type:
+            enabled: true
+      k8sobjects:
+        objects:
+        - exclude_watch_type:
+          - DELETED
+          group: events.k8s.io
+          mode: watch
+          name: events
+    service:
+      pipelines:
+        logs:
+          exporters:
+          - debug
+          - otlp/gateway
+          processors:
+          - k8sattributes
+          - resourcedetection/eks
+          - resourcedetection/gcp
+          - resourcedetection/aks
+          - resource/hostname
+          receivers:
+          - k8sobjects
+        metrics:
+          exporters:
+          - debug
+          - otlp/gateway
+          processors:
+          - k8sattributes
+          - resourcedetection/eks
+          - resourcedetection/gcp
+          - resourcedetection/aks
+          - resource/k8s
+          - resource/hostname
+          receivers:
+          - k8s_cluster
+  replicas: 1
+  image: "docker.elastic.co/elastic-agent/elastic-agent:9.0.0"
+  imagePullPolicy: IfNotPresent
+  upgradeStrategy: automatic
+  terminationGracePeriodSeconds: 30
+  resources:
+    limits:
+      cpu: 100m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 500Mi
+  securityContext:
+    {}
+  targetAllocator:
+    enabled: false
+  volumeMounts:
+  env:
+  - name: OTEL_K8S_NODE_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: OTEL_K8S_NODE_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
+  - name: OTEL_K8S_NAMESPACE
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.namespace
+  - name: OTEL_K8S_POD_NAME
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.name
+  - name: OTEL_K8S_POD_IP
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: status.podIP
+  
+  - name: ELASTIC_AGENT_OTEL
+    value: "true"
+  volumes:
+---
+# Source: opentelemetry-kube-stack/templates/collector.yaml
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: opentelemetry-kube-stack-daemon
+  namespace: opentelemetry-operator-system
+  labels:
+    helm.sh/chart: opentelemetry-kube-stack-0.3.9
+    app.kubernetes.io/version: "0.107.0"
+    app.kubernetes.io/managed-by: Helm
+    release: "opentelemetry-kube-stack"        
+spec:
+  managementState: managed
+  mode: daemonset
+  config:
+    exporters:
+      debug:
+        verbosity: basic
+      otlp/gateway:
+        endpoint: http://opentelemetry-kube-stack-gateway-collector-headless:4317
+        tls:
+          insecure: true
+    extensions:
+      file_storage:
+        directory: /var/lib/otelcol
+    processors:
+      batch:
+        send_batch_max_size: 1500
+        send_batch_size: 1000
+        timeout: 1s
+      batch/metrics:
+        send_batch_max_size: 0
+        timeout: 1s
+      k8sattributes:
+        extract:
+          labels:
+          - from: pod
+            key: app.kubernetes.io/name
+            tag_name: app.label.name
+          - from: pod
+            key: app.kubernetes.io/version
+            tag_name: app.label.version
+          metadata:
+          - k8s.namespace.name
+          - k8s.deployment.name
+          - k8s.replicaset.name
+          - k8s.statefulset.name
+          - k8s.daemonset.name
+          - k8s.cronjob.name
+          - k8s.job.name
+          - k8s.node.name
+          - k8s.pod.name
+          - k8s.pod.ip
+          - k8s.pod.uid
+          - k8s.pod.start_time
+        filter:
+          node_from_env_var: OTEL_K8S_NODE_NAME
+        passthrough: false
+        pod_association:
+        - sources:
+          - from: resource_attribute
+            name: k8s.pod.ip
+        - sources:
+          - from: resource_attribute
+            name: k8s.pod.uid
+        - sources:
+          - from: connection
+      resource/cloud:
+        attributes:
+        - action: insert
+          from_attribute: host.id
+          key: cloud.instance.id
+      resource/hostname:
+        attributes:
+        - action: upsert
+          from_attribute: k8s.node.name
+          key: host.name
+      resource/k8s:
+        attributes:
+        - action: insert
+          from_attribute: app.label.name
+          key: service.name
+        - action: insert
+          from_attribute: k8s.container.name
+          key: service.name
+        - action: delete
+          key: app.label.name
+        - action: insert
+          from_attribute: app.label.version
+          key: service.version
+        - action: delete
+          key: app.label.version
+      resourcedetection/aks:
+        aks:
+          resource_attributes:
+            k8s.cluster.name:
+              enabled: true
+        detectors:
+        - env
+        - aks
+        override: true
+        timeout: 2s
+      resourcedetection/eks:
+        detectors:
+        - env
+        - eks
+        eks:
+          resource_attributes:
+            k8s.cluster.name:
+              enabled: true
+        override: true
+        timeout: 15s
+      resourcedetection/env:
+        detectors:
+        - env
+        override: false
+        timeout: 2s
+      resourcedetection/gcp:
+        detectors:
+        - env
+        - gcp
+        override: true
+        timeout: 2s
+      resourcedetection/system:
+        detectors:
+        - system
+        - ec2
+        ec2:
+          resource_attributes:
+            host.id:
+              enabled: true
+            host.name:
+              enabled: false
+        system:
+          hostname_sources:
+          - os
+          resource_attributes:
+            host.arch:
+              enabled: true
+            host.cpu.cache.l2.size:
+              enabled: true
+            host.cpu.family:
+              enabled: true
+            host.cpu.model.id:
+              enabled: true
+            host.cpu.model.name:
+              enabled: true
+            host.cpu.stepping:
+              enabled: true
+            host.cpu.vendor.id:
+              enabled: true
+            host.id:
+              enabled: false
+            host.ip:
+              enabled: true
+            host.mac:
+              enabled: true
+            host.name:
+              enabled: true
+            os.description:
+              enabled: true
+            os.type:
+              enabled: true
+    receivers:
+      filelog:
+        exclude:
+        - /var/log/pods/*opentelemetry-kube-stack*/*/*.log
+        include:
+        - /var/log/pods/*/*/*.log
+        include_file_name: false
+        include_file_path: true
+        operators:
+        - id: container-parser
+          type: container
+        retry_on_failure:
+          enabled: true
+        start_at: end
+        storage: file_storage
+      hostmetrics:
+        collection_interval: 10s
+        root_path: /hostfs
+        scrapers:
+          cpu:
+            metrics:
+              system.cpu.logical.count:
+                enabled: true
+              system.cpu.utilization:
+                enabled: true
+          disk: {}
+          filesystem:
+            exclude_fs_types:
+              fs_types:
+              - autofs
+              - binfmt_misc
+              - bpf
+              - cgroup2
+              - configfs
+              - debugfs
+              - devpts
+              - devtmpfs
+              - fusectl
+              - hugetlbfs
+              - iso9660
+              - mqueue
+              - nsfs
+              - overlay
+              - proc
+              - procfs
+              - pstore
+              - rpc_pipefs
+              - securityfs
+              - selinuxfs
+              - squashfs
+              - sysfs
+              - tracefs
+              match_type: strict
+            exclude_mount_points:
+              match_type: regexp
+              mount_points:
+              - /dev/*
+              - /proc/*
+              - /sys/*
+              - /run/k3s/containerd/*
+              - /var/lib/docker/*
+              - /var/lib/kubelet/*
+              - /snap/*
+            metrics:
+              system.filesystem.utilization:
+                enabled: true
+          load: {}
+          memory:
+            metrics:
+              system.memory.utilization:
+                enabled: true
+          network: {}
+          process:
+            metrics:
+              process.disk.operations:
+                enabled: true
+              process.memory.utilization:
+                enabled: true
+              process.open_file_descriptors:
+                enabled: true
+              process.threads:
+                enabled: true
+            mute_process_exe_error: true
+            mute_process_io_error: true
+            mute_process_user_error: true
+          processes: {}
+      kubeletstats:
+        auth_type: serviceAccount
+        collection_interval: 20s
+        endpoint: ${env:OTEL_K8S_NODE_NAME}:10250
+        extra_metadata_labels:
+        - container.id
+        insecure_skip_verify: true
+        k8s_api_config:
+          auth_type: serviceAccount
+        metric_groups:
+        - node
+        - pod
+        - volume
+        - container
+        metrics:
+          container.cpu.usage:
+            enabled: true
+          k8s.container.cpu_limit_utilization:
+            enabled: true
+          k8s.container.cpu_request_utilization:
+            enabled: true
+          k8s.container.memory_limit_utilization:
+            enabled: true
+          k8s.container.memory_request_utilization:
+            enabled: true
+          k8s.node.cpu.usage:
+            enabled: true
+          k8s.node.uptime:
+            enabled: true
+          k8s.pod.cpu.node.utilization:
+            enabled: true
+          k8s.pod.cpu.usage:
+            enabled: true
+          k8s.pod.cpu_limit_utilization:
+            enabled: true
+          k8s.pod.memory.node.utilization:
+            enabled: true
+          k8s.pod.memory_limit_utilization:
+            enabled: true
+          k8s.pod.uptime:
+            enabled: true
+        node: ${env:OTEL_K8S_NODE_NAME}
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+    service:
+      extensions:
+      - file_storage
+      pipelines:
+        logs:
+          exporters:
+          - debug
+          processors:
+          - k8sattributes
+          - resourcedetection/env
+          - batch
+          receivers:
+          - otlp
+          - filelog
+        logs/apm:
+          exporters:
+          - otlp/gateway
+          processors:
+          - batch
+          - resource/hostname
+          receivers:
+          - otlp
+        logs/node:
+          exporters:
+          - otlp/gateway
+          processors:
+          - batch
+          - k8sattributes
+          - resourcedetection/system
+          - resourcedetection/eks
+          - resourcedetection/gcp
+          - resourcedetection/aks
+          - resource/k8s
+          - resource/hostname
+          - resource/cloud
+          receivers:
+          - filelog
+        metrics:
+          exporters:
+          - debug
+          processors:
+          - k8sattributes
+          - resourcedetection/env
+          - batch
+          receivers:
+          - otlp
+          - hostmetrics
+          - kubeletstats
+        metrics/node/otel:
+          exporters:
+          - otlp/gateway
+          processors:
+          - batch/metrics
+          - k8sattributes
+          - resourcedetection/system
+          - resourcedetection/eks
+          - resourcedetection/gcp
+          - resourcedetection/aks
+          - resource/k8s
+          - resource/hostname
+          - resource/cloud
+          receivers:
+          - kubeletstats
+          - hostmetrics
+        metrics/otel-apm:
+          exporters:
+          - otlp/gateway
+          processors:
+          - batch/metrics
+          - resource/hostname
+          receivers:
+          - otlp
+        traces:
+          exporters:
+          - debug
+          processors:
+          - k8sattributes
+          - resourcedetection/env
+          - batch
+          receivers:
+          - otlp
+        traces/apm:
+          exporters:
+          - otlp/gateway
+          processors:
+          - batch
+          - resource/hostname
+          receivers:
+          - otlp
+  image: "docker.elastic.co/elastic-agent/elastic-agent:9.0.0"
+  imagePullPolicy: IfNotPresent
+  upgradeStrategy: automatic
+  hostNetwork: true
+  terminationGracePeriodSeconds: 30
+  resources:
+    limits:
+      cpu: 100m
+      memory: 250Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  securityContext:
+    runAsGroup: 0
+    runAsUser: 0
+  targetAllocator:
+    enabled: false
+  volumeMounts:
+  - name: varlogpods
+    mountPath: /var/log/pods
+    readOnly: true
+  - name: varlibdockercontainers
+    mountPath: /var/lib/docker/containers
+    readOnly: true
+  - name: varlibotelcol
+    mountPath: /var/lib/otelcol
+  - name: hostfs
+    mountPath: /hostfs
+    readOnly: true
+    mountPropagation: HostToContainer
+  env:
+  - name: OTEL_K8S_NODE_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: OTEL_K8S_NODE_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
+  - name: OTEL_K8S_NAMESPACE
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.namespace
+  - name: OTEL_K8S_POD_NAME
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.name
+  - name: OTEL_K8S_POD_IP
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: status.podIP
+  
+  - name: ELASTIC_AGENT_OTEL
+    value: "true"
+  - name: HOST_PROC_MOUNTINFO
+    valueFrom:
+      null
+  volumes:
+  - name: varlogpods
+    hostPath:
+      path: /var/log/pods
+  - name: varlibotelcol
+    hostPath:
+      path: /var/lib/otelcol
+      type: DirectoryOrCreate
+  - name: varlibdockercontainers
+    hostPath:
+      path: /var/lib/docker/containers
+  - name: hostfs
+    hostPath:
+      path: /
+---
+# Source: opentelemetry-kube-stack/templates/collector.yaml
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: opentelemetry-kube-stack-gateway
+  namespace: opentelemetry-operator-system
+  labels:
+    helm.sh/chart: opentelemetry-kube-stack-0.3.9
+    app.kubernetes.io/version: "0.107.0"
+    app.kubernetes.io/managed-by: Helm
+    release: "opentelemetry-kube-stack"        
+spec:
+  managementState: managed
+  mode: deployment
+  config:
+    connectors:
+      elasticapm: {}
+      routing:
+        default_pipelines:
+        - metrics/otel
+        error_mode: ignore
+        table:
+        - context: metric
+          pipelines:
+          - metrics/infra/ecs
+          - metrics/otel
+          statement: route() where instrumentation_scope.name == "github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kubeletstatsreceiver"
+            or IsMatch(instrumentation_scope.name, "github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/*")
+    exporters:
+      debug: {}
+      elasticsearch/ecs:
+        api_key: ${env:ELASTIC_API_KEY}
+        endpoints:
+        - ${env:ELASTIC_ENDPOINT}
+        mapping:
+          mode: ecs
+      elasticsearch/otel:
+        api_key: ${env:ELASTIC_API_KEY}
+        endpoints:
+        - ${env:ELASTIC_ENDPOINT}
+        logs_dynamic_index:
+          enabled: true
+        mapping:
+          mode: otel
+        metrics_dynamic_index:
+          enabled: true
+        traces_dynamic_index:
+          enabled: true
+    processors:
+      attributes/dataset:
+        actions:
+        - action: upsert
+          from_attribute: data_stream.dataset
+          key: event.dataset
+      batch:
+        send_batch_max_size: 1500
+        send_batch_size: 1000
+        timeout: 1s
+      batch/metrics:
+        send_batch_max_size: 0
+        timeout: 1s
+      elasticinframetrics:
+        add_k8s_metrics: true
+        add_system_metrics: true
+        drop_original: true
+      elastictrace: {}
+      resource/process:
+        attributes:
+        - action: delete
+          key: process.executable.name
+        - action: delete
+          key: process.executable.path
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: ${env:MY_POD_IP}:4317
+          http:
+            endpoint: ${env:MY_POD_IP}:4318
+    service:
+      pipelines:
+        logs:
+          exporters:
+          - debug
+          - elasticapm
+          - elasticsearch/otel
+          processors:
+          - batch
+          receivers:
+          - otlp
+        metrics:
+          exporters:
+          - routing
+          receivers:
+          - otlp
+        metrics/aggregated-otel-metrics:
+          exporters:
+          - debug
+          - elasticsearch/otel
+          processors: null
+          receivers:
+          - elasticapm
+        metrics/infra/ecs:
+          exporters:
+          - debug
+          - elasticsearch/ecs
+          processors:
+          - elasticinframetrics
+          - attributes/dataset
+          - resource/process
+          - batch/metrics
+          receivers:
+          - routing
+        metrics/otel:
+          exporters:
+          - debug
+          - elasticsearch/otel
+          processors:
+          - batch
+          receivers:
+          - routing
+        traces:
+          exporters:
+          - debug
+          - elasticapm
+          - elasticsearch/otel
+          processors:
+          - batch
+          - elastictrace
+          receivers:
+          - otlp
+  replicas: 2
+  image: "docker.elastic.co/elastic-agent/elastic-agent:9.0.0"
+  imagePullPolicy: IfNotPresent
+  upgradeStrategy: automatic
+  terminationGracePeriodSeconds: 30
+  resources:
+    limits:
+      cpu: 1500m
+      memory: 1500Mi
+    requests:
+      cpu: 100m
+      memory: 500Mi
+  securityContext:
+    {}
+  targetAllocator:
+    enabled: false
+  volumeMounts:
+  env:
+  - name: OTEL_K8S_NODE_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: OTEL_K8S_NODE_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
+  - name: OTEL_K8S_NAMESPACE
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.namespace
+  - name: OTEL_K8S_POD_NAME
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.name
+  - name: OTEL_K8S_POD_IP
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: status.podIP
+  
+  - name: ELASTIC_AGENT_OTEL
+    value: "true"
+  - name: GOMEMLIMIT
+    value: 1025MiB
+  - name: ELASTIC_API_KEY
+    valueFrom:
+      secretKeyRef:
+        key: elastic_api_key
+        name: elastic-secret-otel
+  - name: ELASTIC_ENDPOINT
+    valueFrom:
+      secretKeyRef:
+        key: elastic_endpoint
+        name: elastic-secret-otel
+  - name: GOMAXPROCS
+    valueFrom:
+      resourceFieldRef:
+        resource: limits.cpu
+  volumes:
+---
+# Source: opentelemetry-kube-stack/charts/opentelemetry-operator/templates/admission-webhooks/operator-webhook.yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: none
+  labels:
+    helm.sh/chart: opentelemetry-operator-0.71.1
+    app.kubernetes.io/name: opentelemetry-operator
+    app.kubernetes.io/version: "0.110.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: opentelemetry-kube-stack
+    
+    app.kubernetes.io/component: webhook
+  name: opentelemetry-kube-stack-opentelemetry-operator-validation
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURSakNDQWk2Z0F3SUJBZ0lSQUswcm5mNDlaYzR0TTYwamZYQ3dqTlV3RFFZSktvWklodmNOQVFFTEJRQXcKTFRFck1Da0dBMVVFQXhNaWIzQmxiblJsYkdWdFpYUnllUzF2Y0dWeVlYUnZjaTF2Y0dWeVlYUnZjaTFqWVRBZQpGdzB5TlRBME1Ua3hOREV3TlRGYUZ3MHlOakEwTVRreE5ERXdOVEZhTUMweEt6QXBCZ05WQkFNVEltOXdaVzUwClpXeGxiV1YwY25rdGIzQmxjbUYwYjNJdGIzQmxjbUYwYjNJdFkyRXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUEKQTRJQkR3QXdnZ0VLQW9JQkFRQythMnNLRFhUM0pxU0F4Lzk5WWsyWXd4NlVGWjNMcXM1VGNRTGlxaDdBS1lKcwo1MHBOM3FIenFwck91RmI4ZytPeW9NbnhYOFdwWDVtZ2NVRU5PYkNISXJIUUlIR3JRYWQrTUVPdHJBSFdmbXNxCno4R2R6UjRZNnJnYzJaZjdHTlBqOUVKR3ZRUFR3TVZpamh0V0FVNm9zalVoNWI3L0NuT0QwVGRUZHpGeDZ0ekcKcGJmbGZIZHdnck8yU212bGdaMHJVY3drdENKZ2hqYlJTQ1Z0eWYvN0REOGdwcTNGRDhwY2o5UkdDVEJlaVppegpCZ05ULzhDTGVrYVpBLzVlMnpTV05YdGlxZ1cyaWVYYUVjUSt4SnRBSURaVnBacFpIL3BvVEExOXhKalRINWlNCjlxWG95OGJYVGFIei9HVUU2QUdPNGhxSU14SWxENC9zdGVzY1J2SUhBZ01CQUFHallUQmZNQTRHQTFVZER3RUIKL3dRRUF3SUNwREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0R3WURWUjBUQVFILwpCQVV3QXdFQi96QWRCZ05WSFE0RUZnUVVMQnl0b3NBdy9oNkZQQzZNdnN3Zml1cDVseWN3RFFZSktvWklodmNOCkFRRUxCUUFEZ2dFQkFEdG43ZmducVg0cXB2VjhMdFN4M3VXaGJYWU1NSVpKeWNIQjJoRDZjVGluQkF5MnZaSEcKVTN0aWZ5Y0NvVDlhSEVUWXVjYXRITjd0R1FuY0p1dFdhZlVuU1RFY0YzZVI1b1ZieEZJNWJrK3MrNThnSEFDawo0R25icm82cENpaUFrSmdaOEhTZ0lRUGNPV2ZvMHp3WUpPcjhKYU1OSDFqcUlDWmo0ZDZkMzdJVG1BZWMwZnJhClJhVnZGWUZQUEt1WTdieFRwNjN5RHMzc2RNQVE2NHBDa3VSMDlxK2p1eFJacUZDcXNlVnN1amhIcm5EOW01L2YKQnpCWWx6VFJVYWFxZFg1VjQ1aUZpT09Uak1CM3UxNEpsbkp6VVEzUVl1Q21HMUpaT3FaZGJyekhPRzJIcUtRWApEalhadm82UjJidlROMUFHczNaRjhINVJCWEJUSDZVM09BMD0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+      service:
+        name: opentelemetry-kube-stack-opentelemetry-operator-webhook
+        namespace: opentelemetry-operator-system
+        path: /validate-opentelemetry-io-v1alpha1-instrumentation
+        port: 443
+    failurePolicy:  Ignore
+    name: vinstrumentationcreateupdate.kb.io
+    rules:
+    - apiGroups:
+        - opentelemetry.io
+      apiVersions:
+        - v1alpha1
+      operations:
+        - CREATE
+        - UPDATE
+      resources:
+        - instrumentations
+      scope: Namespaced
+    sideEffects: None
+    timeoutSeconds: 10
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURSakNDQWk2Z0F3SUJBZ0lSQUswcm5mNDlaYzR0TTYwamZYQ3dqTlV3RFFZSktvWklodmNOQVFFTEJRQXcKTFRFck1Da0dBMVVFQXhNaWIzQmxiblJsYkdWdFpYUnllUzF2Y0dWeVlYUnZjaTF2Y0dWeVlYUnZjaTFqWVRBZQpGdzB5TlRBME1Ua3hOREV3TlRGYUZ3MHlOakEwTVRreE5ERXdOVEZhTUMweEt6QXBCZ05WQkFNVEltOXdaVzUwClpXeGxiV1YwY25rdGIzQmxjbUYwYjNJdGIzQmxjbUYwYjNJdFkyRXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUEKQTRJQkR3QXdnZ0VLQW9JQkFRQythMnNLRFhUM0pxU0F4Lzk5WWsyWXd4NlVGWjNMcXM1VGNRTGlxaDdBS1lKcwo1MHBOM3FIenFwck91RmI4ZytPeW9NbnhYOFdwWDVtZ2NVRU5PYkNISXJIUUlIR3JRYWQrTUVPdHJBSFdmbXNxCno4R2R6UjRZNnJnYzJaZjdHTlBqOUVKR3ZRUFR3TVZpamh0V0FVNm9zalVoNWI3L0NuT0QwVGRUZHpGeDZ0ekcKcGJmbGZIZHdnck8yU212bGdaMHJVY3drdENKZ2hqYlJTQ1Z0eWYvN0REOGdwcTNGRDhwY2o5UkdDVEJlaVppegpCZ05ULzhDTGVrYVpBLzVlMnpTV05YdGlxZ1cyaWVYYUVjUSt4SnRBSURaVnBacFpIL3BvVEExOXhKalRINWlNCjlxWG95OGJYVGFIei9HVUU2QUdPNGhxSU14SWxENC9zdGVzY1J2SUhBZ01CQUFHallUQmZNQTRHQTFVZER3RUIKL3dRRUF3SUNwREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0R3WURWUjBUQVFILwpCQVV3QXdFQi96QWRCZ05WSFE0RUZnUVVMQnl0b3NBdy9oNkZQQzZNdnN3Zml1cDVseWN3RFFZSktvWklodmNOCkFRRUxCUUFEZ2dFQkFEdG43ZmducVg0cXB2VjhMdFN4M3VXaGJYWU1NSVpKeWNIQjJoRDZjVGluQkF5MnZaSEcKVTN0aWZ5Y0NvVDlhSEVUWXVjYXRITjd0R1FuY0p1dFdhZlVuU1RFY0YzZVI1b1ZieEZJNWJrK3MrNThnSEFDawo0R25icm82cENpaUFrSmdaOEhTZ0lRUGNPV2ZvMHp3WUpPcjhKYU1OSDFqcUlDWmo0ZDZkMzdJVG1BZWMwZnJhClJhVnZGWUZQUEt1WTdieFRwNjN5RHMzc2RNQVE2NHBDa3VSMDlxK2p1eFJacUZDcXNlVnN1amhIcm5EOW01L2YKQnpCWWx6VFJVYWFxZFg1VjQ1aUZpT09Uak1CM3UxNEpsbkp6VVEzUVl1Q21HMUpaT3FaZGJyekhPRzJIcUtRWApEalhadm82UjJidlROMUFHczNaRjhINVJCWEJUSDZVM09BMD0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+      service:
+        name: opentelemetry-kube-stack-opentelemetry-operator-webhook
+        namespace: opentelemetry-operator-system
+        path: /validate-opentelemetry-io-v1alpha1-instrumentation
+        port: 443
+    failurePolicy: Ignore
+    name: vinstrumentationdelete.kb.io
+    rules:
+      - apiGroups:
+          - opentelemetry.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - DELETE
+        resources:
+          - instrumentations
+        scope: Namespaced
+    sideEffects: None
+    timeoutSeconds: 10
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURSakNDQWk2Z0F3SUJBZ0lSQUswcm5mNDlaYzR0TTYwamZYQ3dqTlV3RFFZSktvWklodmNOQVFFTEJRQXcKTFRFck1Da0dBMVVFQXhNaWIzQmxiblJsYkdWdFpYUnllUzF2Y0dWeVlYUnZjaTF2Y0dWeVlYUnZjaTFqWVRBZQpGdzB5TlRBME1Ua3hOREV3TlRGYUZ3MHlOakEwTVRreE5ERXdOVEZhTUMweEt6QXBCZ05WQkFNVEltOXdaVzUwClpXeGxiV1YwY25rdGIzQmxjbUYwYjNJdGIzQmxjbUYwYjNJdFkyRXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUEKQTRJQkR3QXdnZ0VLQW9JQkFRQythMnNLRFhUM0pxU0F4Lzk5WWsyWXd4NlVGWjNMcXM1VGNRTGlxaDdBS1lKcwo1MHBOM3FIenFwck91RmI4ZytPeW9NbnhYOFdwWDVtZ2NVRU5PYkNISXJIUUlIR3JRYWQrTUVPdHJBSFdmbXNxCno4R2R6UjRZNnJnYzJaZjdHTlBqOUVKR3ZRUFR3TVZpamh0V0FVNm9zalVoNWI3L0NuT0QwVGRUZHpGeDZ0ekcKcGJmbGZIZHdnck8yU212bGdaMHJVY3drdENKZ2hqYlJTQ1Z0eWYvN0REOGdwcTNGRDhwY2o5UkdDVEJlaVppegpCZ05ULzhDTGVrYVpBLzVlMnpTV05YdGlxZ1cyaWVYYUVjUSt4SnRBSURaVnBacFpIL3BvVEExOXhKalRINWlNCjlxWG95OGJYVGFIei9HVUU2QUdPNGhxSU14SWxENC9zdGVzY1J2SUhBZ01CQUFHallUQmZNQTRHQTFVZER3RUIKL3dRRUF3SUNwREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0R3WURWUjBUQVFILwpCQVV3QXdFQi96QWRCZ05WSFE0RUZnUVVMQnl0b3NBdy9oNkZQQzZNdnN3Zml1cDVseWN3RFFZSktvWklodmNOCkFRRUxCUUFEZ2dFQkFEdG43ZmducVg0cXB2VjhMdFN4M3VXaGJYWU1NSVpKeWNIQjJoRDZjVGluQkF5MnZaSEcKVTN0aWZ5Y0NvVDlhSEVUWXVjYXRITjd0R1FuY0p1dFdhZlVuU1RFY0YzZVI1b1ZieEZJNWJrK3MrNThnSEFDawo0R25icm82cENpaUFrSmdaOEhTZ0lRUGNPV2ZvMHp3WUpPcjhKYU1OSDFqcUlDWmo0ZDZkMzdJVG1BZWMwZnJhClJhVnZGWUZQUEt1WTdieFRwNjN5RHMzc2RNQVE2NHBDa3VSMDlxK2p1eFJacUZDcXNlVnN1amhIcm5EOW01L2YKQnpCWWx6VFJVYWFxZFg1VjQ1aUZpT09Uak1CM3UxNEpsbkp6VVEzUVl1Q21HMUpaT3FaZGJyekhPRzJIcUtRWApEalhadm82UjJidlROMUFHczNaRjhINVJCWEJUSDZVM09BMD0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+      service:
+        name: opentelemetry-kube-stack-opentelemetry-operator-webhook
+        namespace: opentelemetry-operator-system
+        path: /validate-opentelemetry-io-v1beta1-opentelemetrycollector
+        port: 443
+    failurePolicy: Ignore
+    name: vopentelemetrycollectorcreateupdatebeta.kb.io
+    rules:
+      - apiGroups:
+          - opentelemetry.io
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - opentelemetrycollectors
+        scope: Namespaced
+    sideEffects: None
+    timeoutSeconds: 10
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURSakNDQWk2Z0F3SUJBZ0lSQUswcm5mNDlaYzR0TTYwamZYQ3dqTlV3RFFZSktvWklodmNOQVFFTEJRQXcKTFRFck1Da0dBMVVFQXhNaWIzQmxiblJsYkdWdFpYUnllUzF2Y0dWeVlYUnZjaTF2Y0dWeVlYUnZjaTFqWVRBZQpGdzB5TlRBME1Ua3hOREV3TlRGYUZ3MHlOakEwTVRreE5ERXdOVEZhTUMweEt6QXBCZ05WQkFNVEltOXdaVzUwClpXeGxiV1YwY25rdGIzQmxjbUYwYjNJdGIzQmxjbUYwYjNJdFkyRXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUEKQTRJQkR3QXdnZ0VLQW9JQkFRQythMnNLRFhUM0pxU0F4Lzk5WWsyWXd4NlVGWjNMcXM1VGNRTGlxaDdBS1lKcwo1MHBOM3FIenFwck91RmI4ZytPeW9NbnhYOFdwWDVtZ2NVRU5PYkNISXJIUUlIR3JRYWQrTUVPdHJBSFdmbXNxCno4R2R6UjRZNnJnYzJaZjdHTlBqOUVKR3ZRUFR3TVZpamh0V0FVNm9zalVoNWI3L0NuT0QwVGRUZHpGeDZ0ekcKcGJmbGZIZHdnck8yU212bGdaMHJVY3drdENKZ2hqYlJTQ1Z0eWYvN0REOGdwcTNGRDhwY2o5UkdDVEJlaVppegpCZ05ULzhDTGVrYVpBLzVlMnpTV05YdGlxZ1cyaWVYYUVjUSt4SnRBSURaVnBacFpIL3BvVEExOXhKalRINWlNCjlxWG95OGJYVGFIei9HVUU2QUdPNGhxSU14SWxENC9zdGVzY1J2SUhBZ01CQUFHallUQmZNQTRHQTFVZER3RUIKL3dRRUF3SUNwREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0R3WURWUjBUQVFILwpCQVV3QXdFQi96QWRCZ05WSFE0RUZnUVVMQnl0b3NBdy9oNkZQQzZNdnN3Zml1cDVseWN3RFFZSktvWklodmNOCkFRRUxCUUFEZ2dFQkFEdG43ZmducVg0cXB2VjhMdFN4M3VXaGJYWU1NSVpKeWNIQjJoRDZjVGluQkF5MnZaSEcKVTN0aWZ5Y0NvVDlhSEVUWXVjYXRITjd0R1FuY0p1dFdhZlVuU1RFY0YzZVI1b1ZieEZJNWJrK3MrNThnSEFDawo0R25icm82cENpaUFrSmdaOEhTZ0lRUGNPV2ZvMHp3WUpPcjhKYU1OSDFqcUlDWmo0ZDZkMzdJVG1BZWMwZnJhClJhVnZGWUZQUEt1WTdieFRwNjN5RHMzc2RNQVE2NHBDa3VSMDlxK2p1eFJacUZDcXNlVnN1amhIcm5EOW01L2YKQnpCWWx6VFJVYWFxZFg1VjQ1aUZpT09Uak1CM3UxNEpsbkp6VVEzUVl1Q21HMUpaT3FaZGJyekhPRzJIcUtRWApEalhadm82UjJidlROMUFHczNaRjhINVJCWEJUSDZVM09BMD0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+      service:
+        name: opentelemetry-kube-stack-opentelemetry-operator-webhook
+        namespace: opentelemetry-operator-system
+        path: /validate-opentelemetry-io-v1beta1-opentelemetrycollector
+        port: 443
+    failurePolicy: Ignore
+    name: vopentelemetrycollectordeletebeta.kb.io
+    rules:
+      - apiGroups:
+          - opentelemetry.io
+        apiVersions:
+          - v1beta1
+        operations:
+          - DELETE
+        resources:
+          - opentelemetrycollectors
+        scope: Namespaced
+    sideEffects: None
+    timeoutSeconds: 10
+
